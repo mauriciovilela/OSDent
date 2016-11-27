@@ -1,0 +1,149 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:o="http://omnifaces.org/ui">
+
+	<ui:define name="titulo">Pagamento</ui:define>
+
+	<ui:define name="corpo">
+
+		<f:metadata>
+			<o:viewParam name="agenda" value="#{pagamentoBean.agenda}" />
+			<f:event listener="#{pagamentoBean.inicializar}" type="preRenderView" />
+		</f:metadata>
+
+		<h:form id="frmPgto">
+
+			<p:messages autoUpdate="true" closable="true" />
+
+			<p:panelGrid columns="2" id="painel">
+
+				<f:facet name="header">  
+				       Pagamento 
+				</f:facet>
+
+				<p:outputLabel value="Paciente:" for="idPaciente" />
+				<p:autoComplete id="idPaciente"
+					value="#{pagamentoBean.pagamento.tbPaciente}"
+					completeMethod="#{pacienteBean.pacientesPorNome}"
+					minQueryLength="2" cache="true" var="item"
+					itemLabel="#{item.dsNome}" itemValue="#{item}"
+					converter="pacienteConverterAC" forceSelection="true" />
+
+				<p:outputLabel value="Dentista" for="idDentista" />
+				<p:selectOneMenu id="idDentista" value="#{pagamentoBean.idDentista}">
+					<f:selectItem itemLabel="" itemValue="" />
+					<f:selectItems value="#{homeMB.dentistas}" var="item"
+						itemLabel="#{item.dsNome}" itemValue="#{item.id}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Status" for="idStatus" />
+				<p:selectOneRadio id="idStatus"
+					value="#{pagamentoBean.pagamento.tbPagamentoStatus}">
+					<f:selectItems value="#{homeMB.pagamentoStatus}" var="item"
+						itemLabel="#{item.dsNome}" itemValue="#{item}" />
+					<p:ajax event="change" listener="#{pagamentoBean.verificaStatusPgto}"
+					 	process="@this idPaciente idDentista idStatus" update="vlTotal vlPago" />
+				</p:selectOneRadio>
+
+				<p:outputLabel value="Tipo Pgto" for="idTipoPgto" />
+				<p:selectOneRadio id="idTipoPgto"
+					value="#{pagamentoBean.pagamento.tbTipoPgto}">
+					<f:selectItems value="#{homeMB.tipoPgtos}" var="item"
+						itemLabel="#{item.dsNome}" itemValue="#{item}" />
+					<p:ajax event="change" listener="#{pagamentoBean.verificaTipoPgto}" 
+						process="@this idPaciente idDentista idStatus" update="@form" />
+				</p:selectOneRadio>
+
+				<p:outputLabel value="Parcelas" for="qtParcelas"
+					rendered="#{pagamentoBean.tipoCredito and pagamentoBean.pgtoObrigatorio}" />
+				<p:spinner min="1" max="10" id="qtParcelas" value="#{pagamentoBean.pagamento.qtParcelas}"
+					rendered="#{pagamentoBean.tipoCredito and pagamentoBean.pgtoObrigatorio}">
+					<p:ajax event="blur" listener="#{pagamentoBean.atualizaTotal}"
+						update="vlTotal vlPago" />					
+				</p:spinner>					
+
+				<p:outputLabel value="Valor parcela" for="vlParcela"
+					rendered="#{pagamentoBean.tipoCredito and pagamentoBean.pgtoObrigatorio}" />
+				<pe:inputNumber id="vlParcela" maxlength="10"
+					value="#{pagamentoBean.pagamento.vlParcela}"
+					rendered="#{pagamentoBean.tipoCredito and pagamentoBean.pgtoObrigatorio}">
+					<p:ajax event="blur" listener="#{pagamentoBean.atualizaTotal}"
+						update="vlTotal vlPago" />
+				</pe:inputNumber>
+
+				<p:outputLabel value="Valor Total" for="vlTotal"
+					rendered="#{pagamentoBean.pgtoObrigatorio}" />
+				<pe:inputNumber id="vlTotal" maxlength="10"
+					value="#{pagamentoBean.pagamento.vlTotal}"
+					rendered="#{pagamentoBean.pgtoObrigatorio}">
+					<p:ajax event="blur" listener="#{pagamentoBean.atualizaTotal}"
+						update="vlPago" />
+				</pe:inputNumber>
+
+				<p:outputLabel value="Valor Pago" for="vlPago"
+					rendered="#{pagamentoBean.pgtoObrigatorio}" />
+				<pe:inputNumber id="vlPago" maxlength="10"
+					value="#{pagamentoBean.pagamento.vlPago}"
+					rendered="#{pagamentoBean.pgtoObrigatorio}" />
+
+				<p:outputLabel value="Data" for="dtEntrada" />
+				<p:calendar id="dtEntrada" pattern="dd/MM/yyyy" mask="true"
+					value="#{pagamentoBean.pagamento.dtEntrada}" locale="pt" />
+
+				<p:outputLabel value="Recebido por" for="idResponsavel" />
+				<p:selectOneMenu id="idResponsavel"
+					value="#{pagamentoBean.idResponsavel}">
+					<f:selectItem itemLabel="" itemValue="" />
+					<f:selectItems value="#{homeMB.usuarios}" var="item"
+						itemLabel="#{item.dsNome}" itemValue="#{item.id}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Máquina Cartão" for="idSocio"
+					rendered="#{pagamentoBean.tipoPgtoMaquina}" />
+				<p:selectOneRadio id="idSocio" value="#{pagamentoBean.idMaquina}"
+					rendered="#{pagamentoBean.tipoPgtoMaquina}">
+					<f:selectItems value="#{homeMB.socios}" var="item"
+						itemLabel="#{item.dsNome}" itemValue="#{item.id}" />
+				</p:selectOneRadio>
+
+				<p:outputLabel value="Observação" for="dsObservacao" />
+				<p:inputTextarea id="dsObservacao" maxlength="150"
+					value="#{pagamentoBean.pagamento.dsObservacao}" />
+
+				<p:outputLabel for="botoes" />
+				<p:outputPanel id="botoes">
+					<p:commandLink id="lnkPesquisar" update="@form"
+						action="#{pagamentoBean.validarSalvar}">
+						<i class="fa fa-fw fa-check"></i>
+						<span>Salvar</span>
+					</p:commandLink>
+					<p:link outcome="/restrita/pagamento/PagamentoPesquisa">
+						<i class="fa fa-fw fa-arrow-circle-left"></i>
+						<span>Pesquisar Pagamentos</span>
+					</p:link>
+				</p:outputPanel>
+
+			</p:panelGrid>
+
+			<p:confirmDialog header="Atenção" widgetVar="confirmacao"
+				id="confirmacaoDialog">
+				<f:facet name="message">
+			        Já existe um pagamento deste valor<br /> 
+			        para este paciente nesta data.<br />
+					<br />
+			        Inserir novo pagamento?
+			    </f:facet>
+				<p:commandButton value="Sim" oncomplete="confirmacao.hide();"
+					action="#{pagamentoBean.salvar}" process="@this" update="@form" />
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+			</p:confirmDialog>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

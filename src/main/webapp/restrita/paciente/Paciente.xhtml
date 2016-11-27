@@ -1,0 +1,131 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:o="http://omnifaces.org/ui">
+
+    <ui:define name="titulo">#{pacienteBean.editando ? 'Edição de registro' : 'Novo paciente'}</ui:define>
+    
+    <ui:define name="corpo">
+    
+    	<f:metadata>
+    		<o:viewParam name="paciente" value="#{pacienteBean.paciente}" />
+    		<f:event listener="#{pacienteBean.inicializar}" type="preRenderView" />
+    	</f:metadata>
+    
+    	<h:form>
+
+	    	<p:messages autoUpdate="true" closable="true" />
+	    	
+	    	<p:panelGrid columns="2" id="painel">
+	    						
+				<f:facet name="header"> 
+				    #{pacienteBean.editando ? 'Edição de registro' : 'Novo paciente'}
+				</f:facet>	    
+				
+	    		<p:outputLabel value="Nome" for="dsNome"/>
+	    		<p:inputText id="dsNome" maxlength="100" value="#{pacienteBean.paciente.dsNome}"/>
+	    						
+	    		<p:outputLabel value="CPF" for="nrCPF"/>
+	    		<p:inputMask id="nrCPF" mask="999.999.999-99" value="#{pacienteBean.paciente.nrCPF}" />
+	    				
+	    		<p:outputLabel value="Telefone" for="dsFone"/>
+	    		<p:inputMask id="dsFone" mask="(99) 9999-9999?9" value="#{pacienteBean.paciente.dsFone}" />
+	    				
+	    		<p:outputLabel value="Endereço" for="dsEndereco"/>
+	    		<p:inputText id="dsEndereco" maxlength="100" value="#{pacienteBean.paciente.dsEndereco}"/>
+	    		
+	    		<p:outputLabel value="E-mail" for="dsEmail"/>
+	    		<p:inputText id="dsEmail" maxlength="100" value="#{pacienteBean.paciente.dsEmail}"/>	    		
+	    		
+	    		<p:outputLabel value="Aniversário" for="dtNiver"/>
+	    		<p:inputMask id="dtNiver" mask="99/99" value="#{pacienteBean.aniversario}" />
+	    		    			
+	    		<p:outputLabel value="Panfetlo?" for="flPanfleto" rendered="#{pacienteBean.paciente.id ne null}" />
+	    		<p:selectBooleanCheckbox id="flPanfleto" value="#{pacienteBean.panfleto}" 
+	    			rendered="#{pacienteBean.paciente.id ne null}" disabled="true" />
+	    		
+	    		<p:outputLabel value="Avaliação?" for="flAvaliacao" rendered="#{pacienteBean.paciente.id ne null}" />
+	    		<p:selectBooleanCheckbox id="flAvaliacao" value="#{pacienteBean.paciente.flAvaliacao}"
+	    			rendered="#{pacienteBean.paciente.id ne null}" disabled="true" />
+	    		    		    		    			
+	    		<p:outputLabel value="Promoção?" for="outPromo" rendered="#{pacienteBean.paciente.id ne null}" />
+	    		<p:outputPanel id="outPromo" rendered="#{pacienteBean.paciente.id ne null}">
+			        <p:selectOneRadio value="#{pacienteBean.promocao}" disabled="true">
+			            <f:selectItem itemLabel="Indicação" itemValue="I" />
+			            <f:selectItem itemLabel="Pasta" itemValue="P" />
+			        </p:selectOneRadio>		    		
+	    		</p:outputPanel>
+	    		    			
+	    		<p:outputLabel value="Indicado por:" for="indicadoPor" rendered="#{pacienteBean.paciente.tbIndicacao ne null}" />
+	    		<p:inputText id="indicadoPor" value="#{pacienteBean.paciente.tbIndicacao.dsNome}" 
+	    			rendered="#{pacienteBean.paciente.tbIndicacao ne null}" disabled="#{pacienteBean.paciente.id ne null}" />
+	    				
+	    		<p:outputLabel value="Observação" for="dsObs"/>
+				<p:inputTextarea id="dsObs" rows="2" cols="35" autoResize="false"
+					maxlength="100"
+					value="#{pacienteBean.paciente.dsObservacao}" style="max-width: 205px;" />	    		
+	    		
+	    		<p:outputLabel for="botoes"/>	
+	    		<p:outputPanel id="botoes">
+					<p:commandLink id="lnkModal" onclick="PF('dlgPaciente').show()">
+						<i class="fa fa-fw fa-check"></i><span>Continuar</span>
+					</p:commandLink>
+					<p:link outcome="/restrita/paciente/PacientePesquisa">
+						<i class="fa fa-fw fa-arrow-circle-left"></i><span>Voltar</span>
+					</p:link>
+	    		</p:outputPanel>
+	    		
+	    	</p:panelGrid>
+
+			<p:dialog widgetVar="dlgPaciente" header="Finalizar"
+				resizable="false" modal="true" closeOnEscape="true"
+				responsive="true">
+				
+				<p:panelGrid columns="2">
+	    		    			
+		    		<p:outputLabel value="Panfetlo?" for="flPanfleto2"/>
+		    		<p:selectBooleanCheckbox id="flPanfleto2" value="#{pacienteBean.panfleto}" />
+
+		    		<p:outputLabel value="Avaliação?" for="flAvaliacao2"/>
+		    		<p:selectBooleanCheckbox id="flAvaliacao2" value="#{pacienteBean.paciente.flAvaliacao}" />
+	    		    			
+		    		<p:outputLabel value="Promoção?" for="outPromo2"/>
+		    		<p:outputPanel id="outPromo2">
+				        <p:selectOneRadio value="#{pacienteBean.promocao}">
+				            <f:selectItem itemLabel="Indicação" itemValue="I" />
+				            <f:selectItem itemLabel="Pasta" itemValue="P" />
+							<p:ajax listener="#{pacienteBean.atualizaPromocao}" update="indicadoPor2" />
+				        </p:selectOneRadio>		    		
+		    		</p:outputPanel>
+	    		    			
+					<p:outputLabel value="Indicado por:" for="indicadoPor2" />
+					<p:autoComplete id="indicadoPor2"
+						value="#{pacienteBean.paciente.tbIndicacao}"
+						disabled="#{pacienteBean.promocao != 'I'}"
+						completeMethod="#{pacienteBean.pacientesPorNome}"
+						minQueryLength="2" cache="true" var="item"
+						itemLabel="#{item.dsNome}" itemValue="#{item}"
+						converter="pacienteConverterAC" forceSelection="true" />  		        
+	    		
+		    		<p:outputLabel for="botoesFim"/>
+		    		<p:outputPanel id="botoesFim">
+						<p:commandLink id="lnkFinalizar" update="@form" action="#{pacienteBean.salvar}">
+							<i class="fa fa-fw fa-check"></i><span>Finalizar</span>
+						</p:commandLink>
+						<p:link onclick="PF('dlgPaciente').hide()">
+							<i class="fa fa-fw fa-close"></i><span>Cancelar</span>
+						</p:link>
+		    		</p:outputPanel>
+	    			    			
+				</p:panelGrid>
+
+			</p:dialog>
+    	
+    	</h:form>
+    	
+    </ui:define>
+    
+</ui:composition>

@@ -1,0 +1,95 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Pagamentos</ui:define>
+    
+    <ui:define name="corpo">
+    	<h:form id="frmPesquisa">
+    			
+			<f:passThroughAttribute name="autocomplete" value="off"/>
+    	
+	    	<p:messages autoUpdate="true" closable="true" />
+	 
+	    	<p:panelGrid columns="2" id="painel">
+				
+				<f:facet name="header"> 
+					Pesquisa de Pagamentos 
+				</f:facet>	    		
+				
+				<p:outputLabel value="Data do Pagamento" for="data" />
+				<p:calendar id="data" pattern="dd/MM/yyyy" mask="true"
+					value="#{pagamentoBeanPesquisa.data}" locale="pt" />	
+	
+	    		<p:outputLabel for="botoes"/>
+	    		<p:outputPanel id="botoes">
+					<p:commandLink id="lnkPesquisar" update="@form" action="#{pagamentoBeanPesquisa.pesquisar}">
+						<i class="fa fa-fw fa-search"></i><span>Pesquisar</span>
+					</p:commandLink>
+	    		</p:outputPanel>
+	    		
+	    		<p:defaultCommand target="lnkPesquisar" />
+	    		
+	    	</p:panelGrid>
+	    	
+	    	<p:dataTable reflow="true" id="dtbRegistros" value="#{pagamentoBeanPesquisa.filtrados}" var="item"
+	    		style="margin-top: 12px" emptyMessage="Nenhum registro encontrado.">
+	    		<p:column style="width: 35px; text-align: center">
+<!-- 	    			<p:link outcome="/restrita/pagamento/Pagamento"> -->
+<!-- 	    				<i class="fa fa-fw fa-edit"></i> -->
+<!-- 	    				<f:param name="saida" value="#{item.id}" /> -->
+<!-- 	    			</p:link> 			 -->
+	    			<p:commandLink title="Excluir" oncomplete="PF('confirmacaoExclusao').show()"
+	    					process="@this" update=":frmPesquisa:confirmacaoExclusaoDialog">
+	    					<i class="fa fa-fw fa-trash"></i>
+						<f:setPropertyActionListener target="#{pagamentoBeanPesquisa.selecionado}" 
+	    					value="#{item}" />	    					
+	    			</p:commandLink>		    			
+	    		</p:column>
+	    		<p:column headerText="Paciente">
+	    			<h:outputText value="#{item.tbPaciente.dsNome}" />
+	    		</p:column>
+	    		<p:column headerText="Dentista">
+	    			<h:outputText value="#{item.tbDentista.dsNome}" />
+	    		</p:column>
+	    		<p:column headerText="Tipo Pgto">
+	    			<h:outputText value="#{item.tbTipoPgto.dsNome}" />
+	    		</p:column>
+	    		<p:column headerText="Descrição">
+	    			<h:outputText value="#{item.dsObservacao}" />
+	    		</p:column>
+	    		<p:column headerText="Data">
+	    			<h:outputText value="#{item.dtEntrada}" >
+	    				<f:convertDateTime pattern="dd/MM/yyyy" />
+	    			</h:outputText>
+	    		</p:column>
+	    		<p:column headerText="Total">
+	    			<h:outputText value="#{item.vlTotal}" >
+	    				<f:convertNumber type="currency"/>
+	    			</h:outputText>	    		
+	    		</p:column>
+	    		<p:column headerText="Pago">
+	    			<h:outputText value="#{item.vlPago}" >
+	    				<f:convertNumber type="currency"/>
+	    			</h:outputText>	    		
+	    		</p:column>	    		
+	    		<p:column headerText="Máquina Cart.">
+	    			<h:outputText value="#{item.tbMaquina.dsNome}" />
+	    		</p:column>
+	    	</p:dataTable>
+	    	
+	    	<p:confirmDialog header="Exclusão" 
+	    		message="Tem certeza que deseja excluir ?"
+	    		widgetVar="confirmacaoExclusao"	id="confirmacaoExclusaoDialog">
+	    		<p:commandButton value="Sim" oncomplete="PF('confirmacaoExclusao').hide();"
+	    			action="#{pagamentoBeanPesquisa.excluir}" process="@this"
+	    			update=":frmPesquisa:dtbRegistros" />
+	    		<p:button value="Não" onclick="PF('confirmacaoExclusao').hide(); return false;" />
+	    	</p:confirmDialog>
+	    	
+    	</h:form>
+    </ui:define>
+</ui:composition>

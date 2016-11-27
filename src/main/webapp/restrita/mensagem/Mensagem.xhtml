@@ -1,0 +1,51 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:o="http://omnifaces.org/ui">
+
+    <ui:define name="titulo">Alterar Senha</ui:define>
+    
+    <ui:define name="corpo">
+    
+    	<f:metadata>
+    		<f:event listener="#{mensagemBean.inicializar}" type="preRenderView" />
+    	</f:metadata>
+    
+    	<h:form>
+
+	    	<p:messages autoUpdate="true" closable="true" />
+	    	
+	    	<p:panelGrid columns="2" id="painel" style="width: 40%; ">
+	    						
+				<f:facet name="header"> 
+				    Enviar mensagem
+				</f:facet>	    
+				
+				<p:outputLabel value="Para:" for="idUsuario" />  
+		        <p:selectOneMenu filter="true" id="idUsuario" value="#{mensagemBean.idUsuario}">
+		        	<f:selectItem itemLabel="" itemValue="" />  
+		            <f:selectItems value="#{homeMB.usuarios}"
+		            	var="item" itemLabel="#{item.dsNome}" itemValue="#{item.id}" />  
+		        </p:selectOneMenu> 	
+
+	    		<p:outputLabel for="descricao" value="Mensagem:" /> 
+				<p:inputTextarea id="descricao" rows="5" cols="30" autoResize="false" 
+					maxlength="300" value="#{mensagemBean.texto}" />
+
+	    		<p:outputLabel for="botoes"/>
+	    		<p:outputPanel id="botoes">
+					<p:commandLink id="lnkPesquisar" update="@form" action="#{mensagemBean.salvar}">
+						<i class="fa fa-fw fa-check"></i><span>Salvar</span>
+					</p:commandLink>
+					<p:link outcome="/restrita/mensagem/Mensagem">
+						<i class="fa fa-fw fa-remove"></i><span>Limpar</span>
+					</p:link>
+	    		</p:outputPanel>
+	    			    		
+	    	</p:panelGrid>
+    	</h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,76 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Relatórios</ui:define>
+    
+    <ui:define name="corpo">
+    	<h:form id="frmPesquisa">
+
+	    	<p:messages autoUpdate="true" closable="true" />
+	 
+	    	<p:panelGrid columns="2" id="painel" >
+				
+				<f:facet name="header"> 
+				       Relatório de Inadimplentes
+				</f:facet>	    			
+	    		
+	    	</p:panelGrid>
+	    	
+	    	<p:dataTable id="dtbRegistros" value="#{rptInadimplentesBean.filtrados}" var="item"
+	    		style="margin-top:10px;" emptyMessage="Nenhum registro encontrado." rows="15"
+	    		paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+	    		<p:column headerText="Ação" style="width: 165px;text-align: center">
+	    			<p:commandLink title="Dar baixa no pagamento" oncomplete="PF('confirmacaoExclusao').show()"
+	    					process="@this" update=":frmPesquisa:confirmacaoExclusaoDialog">
+	    					<i class="fa fa-check"></i> Dar baixa
+						<f:setPropertyActionListener target="#{rptInadimplentesBean.selecionado}" value="#{item}" />	    					
+	    			</p:commandLink>		    	
+	    			<p:commandLink actionListener="#{pacienteBeanPesquisa.modalHistoricoPagamento(item.tbPaciente.id)}"
+			        	process="@this" title="Histórico de pagamentos" style="margin-left:7px;">
+			        		<i class="fa fa-dollar"></i> Pagamentos</p:commandLink>    				
+    			</p:column>		
+	    		<p:column headerText="Paciente">
+	    			<h:outputText value="#{item.tbPaciente.dsNome}" />
+	    		</p:column>
+<!-- 	    		<p:column headerText="Tipo"> -->
+<!-- 	    			<h:outputText value="#{item.tbTipoPgto.dsNome}" /> -->
+<!-- 	    		</p:column> -->
+	    		<p:column headerText="Obs.">
+	    			<h:outputText value="#{item.dsObservacao}" />
+	    		</p:column>	    		
+	    		<p:column headerText="Data">
+	    			<h:outputText value="#{item.dtEntrada}" >
+	    				<f:convertDateTime pattern="dd/MM/yyyy" />
+	    			</h:outputText>
+	    		</p:column>
+	    		<p:column headerText="Valor Total">
+	    			<h:outputText value="#{item.vlTotal}" >
+	    				<f:convertNumber type="currency"/>
+	    			</h:outputText>	    		
+	    		</p:column>
+	    		<p:column headerText="Valor Pago">
+	    			<h:outputText value="#{item.vlPago}" >
+	    				<f:convertNumber type="currency"/>
+	    			</h:outputText>	    		
+	    		</p:column>
+	    		<p:column headerText="Dentista">
+	    			<h:outputText value="#{item.tbDentista.dsNome}" />
+	    		</p:column>
+	    	</p:dataTable>
+	    	
+	    	<p:confirmDialog header="Confirmação" 
+	    		message="Pagamento confirmado?"
+	    		widgetVar="confirmacaoExclusao"	id="confirmacaoExclusaoDialog">
+	    		<p:commandButton value="Sim" oncomplete="PF('confirmacaoExclusao').hide();"
+	    			action="#{rptInadimplentesBean.confirmar}" process="@this"
+	    			update=":frmPesquisa:dtbRegistros" />
+	    		<p:button value="Não" onclick="PF('confirmacaoExclusao').hide(); return false;" />
+	    	</p:confirmDialog>
+	    	
+    	</h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,104 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Relatórios</ui:define>
+    
+    <ui:define name="corpo">
+    	<h:form id="frmPesquisa">
+    	    	
+    		<style type="text/css">
+    			.hasDatepicker {
+    				width: 80px !important;
+    			}
+    		</style>
+
+	    	<p:messages autoUpdate="true" closable="true" />
+	 
+	    	<p:panelGrid columns="6" id="painel">
+				<f:facet name="header"> 
+					Relatório de Fluxo de Caixa
+				</f:facet>	    			
+				
+				<p:outputLabel value="De" for="inicio" />
+				<p:calendar id="inicio" pattern="dd/MM/yyyy" mask="true"
+					value="#{rptFluxoCaixaBean.dataIni}" locale="pt" />	
+					
+				<p:outputLabel value="ate" for="fim" />
+				<p:calendar id="fim" pattern="dd/MM/yyyy" mask="true"
+					value="#{rptFluxoCaixaBean.dataFim}" locale="pt" />	
+						
+	    		<p:outputLabel for="botoes"/>
+	    		<p:outputPanel id="botoes">
+					<p:commandLink id="lnkPesquisar" update="@form" action="#{rptFluxoCaixaBean.pesquisar}">
+						<i class="fa fa-fw fa-search"></i><span>Pesquisar</span>
+					</p:commandLink>
+	    		</p:outputPanel>
+	    		
+	    	</p:panelGrid>
+			
+			<p:outputPanel style="float: left; width: 400px"
+	    		 rendered="#{rptFluxoCaixaBean.temRegistros}">
+			
+				<p:outputPanel id="outChar" rendered="#{rptFluxoCaixaBean.registrosConsolidado != null}">
+					<p:chart type="pie" model="#{rptFluxoCaixaBean.registrosConsolidado}" 
+						style="width:400px;height:300px;float: left" />
+				</p:outputPanel>
+				
+				<p:commandLink id="lnkGerar" update="@form" action="#{rptFluxoCaixaBean.gerarFechamento}">
+					<i class="fa fa-fw fa-check"></i><span>Gerar Fechamento Mensal</span>
+				</p:commandLink>				
+				
+	    	</p:outputPanel>
+	    	
+	    	<p:outputPanel style="float: right;text-align: left;width: 60%;"
+	    		 rendered="#{rptFluxoCaixaBean.temRegistros}">	    	
+		    	<p:dataTable reflow="true" id="dtbRegistros"
+		    		value="#{rptFluxoCaixaBean.registros}" var="item"
+		    		style="margin-top: 12px;margin-bottom: 10px;" emptyMessage="Nenhum registro encontrado.">
+		    		<p:column headerText="Data">
+		    			<h:outputText value="#{item.dtFechamento}" >
+		    				<f:convertDateTime pattern="dd/MM/yyyy" />
+		    			</h:outputText>
+		    		</p:column>    		
+		    		<p:column headerText="Movimentado">
+		    			<h:outputText value="#{item.vlMovimentado}" >
+		    				<f:convertNumber pattern="#0.00" />
+		    			</h:outputText>	    		
+		    		</p:column>    		
+		    		<p:column headerText="Dinheiro">
+		    			<h:outputText value="#{item.vlDinheiro}" >
+		    				<f:convertNumber pattern="#0.00" />
+		    			</h:outputText>	    		
+		    		</p:column>    		
+		    		<p:column headerText="Débito">
+		    			<h:outputText value="#{item.vlDebito}" >
+		    				<f:convertNumber pattern="#0.00" />
+		    			</h:outputText>	    		
+		    		</p:column>    		
+		    		<p:column headerText="Crédito">
+		    			<h:outputText value="#{item.vlCredito}" >
+		    				<f:convertNumber pattern="#0.00" />
+		    			</h:outputText>	    		
+		    		</p:column>    		
+		    		<p:column headerText="Cheque">
+		    			<h:outputText value="#{item.vlCheque}" >
+		    				<f:convertNumber pattern="#0.00" />
+		    			</h:outputText>	    		
+		    		</p:column>    		
+		    		<p:column headerText="Despesas">
+		    			<h:outputText value="#{item.vlDespesa}" >
+		    				<f:convertNumber pattern="#0.00" />
+		    			</h:outputText>	    		
+		    		</p:column>    		
+		    	</p:dataTable>
+			</p:outputPanel>
+
+    	</h:form>
+
+    </ui:define>
+    
+</ui:composition>

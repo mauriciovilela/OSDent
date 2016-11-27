@@ -1,0 +1,92 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Pesquisa de Saída</ui:define>
+    
+    <ui:define name="corpo">
+    	<h:form id="frmPesquisa">
+
+	    	<p:messages autoUpdate="true" closable="true" />
+	 
+<!-- 	 		<p:focus context="painel" />  -->
+	    		 
+	    	<p:panelGrid columns="1" id="painel" style="width: 100%; ">
+						
+				<f:facet name="header"> 
+					Retirada Mensal 
+				</f:facet>	  
+				
+	    		<p:outputPanel id="botoes">
+					<p:commandLink id="lnkPesquisar" update="@form" action="#{retiradaBeanPesquisa.pesquisar}">
+						<i class="fa fa-fw fa-search"></i><span>Pesquisar</span>
+					</p:commandLink>
+	    		</p:outputPanel>
+	    		
+	    	</p:panelGrid>
+	    	
+	    	<p:dataTable reflow="true" id="dtbRegistros" value="#{retiradaBeanPesquisa.filtrados}" var="item"
+	    		style="margin-top: 12px" emptyMessage="Nenhum registro encontrado." rows="10"
+	    		paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom">
+	    		<p:column style="width: 35px; text-align: center">
+	    			<p:link outcome="/restrita/caixa/Retirada">
+	    				<i class="fa fa-fw fa-edit"></i>
+	    				<f:param name="retirada" value="#{item.id}" />
+	    			</p:link> 			
+	    			<p:commandLink title="Excluir" oncomplete="PF('confirmacaoExclusao').show()"
+	    					process="@this" update=":frmPesquisa:confirmacaoExclusaoDialog">
+	    					<i class="fa fa-fw fa-trash"></i>
+						<f:setPropertyActionListener target="#{retiradaBeanPesquisa.selecionado}" 
+	    					value="#{item}" />	    					
+	    			</p:commandLink>	    			
+	    		</p:column>
+	    		<p:column headerText="Descrição">
+	    			<h:outputText value="#{item.dsDescricao}" />
+	    		</p:column>
+	    		<p:column headerText="Data">
+	    			<h:outputText value="#{item.dtRetirada}" >
+	    				<f:convertDateTime pattern="dd/MM/yyyy" />
+	    			</h:outputText>
+	    		</p:column>
+	    		<p:column headerText="Valor Bruto">
+	    			<h:outputText value="#{item.vlBruto}" >
+	    				<f:convertNumber type="currency"/>
+	    			</h:outputText>	    		
+	    		</p:column>
+	    		<p:column headerText="Valor Líquido">
+	    			<h:outputText value="#{item.vlLiquido}" >
+	    				<f:convertNumber type="currency"/>
+	    			</h:outputText>	    		
+	    		</p:column>
+	    		<p:column headerText="Valor Retirada">
+	    			<h:outputText value="#{item.vlRetirada}" >
+	    				<f:convertNumber type="currency"/>
+	    			</h:outputText>	    		
+	    		</p:column>
+	    		<p:column headerText="Valor Individual">
+	    			<h:outputText value="#{item.vlRetiradaIndividual}" >
+	    				<f:convertNumber type="currency"/>
+	    			</h:outputText>	    		
+	    		</p:column>
+	    		<p:column headerText="Despesa">
+	    			<h:outputText value="#{item.vlDespesa}" >
+	    				<f:convertNumber type="currency"/>
+	    			</h:outputText>	    		
+	    		</p:column>
+	    	</p:dataTable>
+	    	
+	    	<p:confirmDialog header="Exclusão" 
+	    		message="Tem certeza que deseja excluir ?"
+	    		widgetVar="confirmacaoExclusao"	id="confirmacaoExclusaoDialog">
+	    		<p:commandButton value="Sim" oncomplete="PF('confirmacaoExclusao').hide();"
+	    			action="#{retiradaBeanPesquisa.excluir}" process="@this"
+	    			update=":frmPesquisa:dtbRegistros" />
+	    		<p:button value="Não" onclick="PF('confirmacaoExclusao').hide(); return false;" />
+	    	</p:confirmDialog>
+	    	
+    	</h:form>
+    </ui:define>
+</ui:composition>

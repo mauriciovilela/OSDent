@@ -1,0 +1,246 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">Fechar Caixa</ui:define>
+
+	<ui:define name="corpo">
+	
+		<h:form id="frmPesquisa">
+
+<!-- 			<p:messages autoUpdate="true" closable="true" /> -->
+						     
+			<p:panelGrid columns="3" id="painel" style="width: 100%">
+
+				<f:facet name="header"> 
+					Fechamento do caixa <p:outputLabel styleClass="vermelha" value="(Caixa Fechado)" 
+						rendered="#{fechamentoCaixaBean.caixaEncontrado ne null}"></p:outputLabel>
+				</f:facet>
+
+				<p:calendar id="data" pattern="dd/MM/yyyy" mask="true"
+					value="#{fechamentoCaixaBean.data}" locale="pt"  style="float: left;" >
+					<p:ajax event="dateSelect" process="@this" 
+						listener="#{fechamentoCaixaBean.pesquisar(true)}" update="@form" />					
+				</p:calendar>
+
+				<p:outputPanel style="float: right;">
+					<h:commandLink id="btnFecharCx" 
+						onclick ="PF('dlgFechamento').show();return false;"
+						rendered="#{fechamentoCaixaBean.caixaEncontrado eq null}">
+						<i class="fa fa-fw fa-lock"></i>Fechar Caixa
+					</h:commandLink>						
+	
+					<p:commandLink process="@this" style="margin-left: 7px;"
+						actionListener="#{fechamentoCaixaBean.reabrirCaixa}"
+						update="@form"
+						rendered="#{fechamentoCaixaBean.caixaEncontrado ne null and homeMB.perfilSocio}">
+						<i class="fa fa-fw fa-history"></i>Reabrir Caixa
+					</p:commandLink>						
+					
+				</p:outputPanel>
+
+			</p:panelGrid>
+			
+			<p:outputPanel rendered="#{fechamentoCaixaBean.caixaEncontrado eq null}">
+			
+				<p:outputPanel rendered="#{fechamentoCaixaBean.vlLiquido ne null}">
+					<div class="totalLiquido">
+						<p:outputLabel value="Valor líquido: " for="vlLiquido" />
+						<h:outputText id="vlLiquido"
+							value="#{fechamentoCaixaBean.vlLiquido}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</div>
+					<div class="totalLiquido">
+						<p:outputLabel value="Valor líquido dinheiro: "
+							for="vlLiquidoDinheiro" />
+						<h:outputText id="vlLiquidoDinheiro"
+							value="#{fechamentoCaixaBean.vlLiquidoDinheiro}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</div>
+					<div class="totalBruto">
+						<p:outputLabel value="Valor bruto cartões: "
+							for="vlBrutoCartoes" />
+						<h:outputText id="vlBrutoCartoes"
+							value="#{fechamentoCaixaBean.vlBrutoCartoes}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</div>
+				</p:outputPanel>
+	
+				<!-- 
+					Pagamentos
+				-->						
+				<p:dataTable id="dtbEntrada" value="#{fechamentoCaixaBean.pagamentos}"				
+					var="item" styleClass="divEsquerda" style="margin: 10px 0px 15px 0px"
+					emptyMessage="Nenhum registro encontrado." 
+					paginator="false" sortBy="#{item.tbTipoPgto.dsNome}">
+					<f:facet name="header"> 
+						Pagamentos
+					</f:facet>
+					<p:column headerText="Paciente">
+						<h:outputText value="#{item.tbPaciente.dsNome}" />
+					</p:column>
+	<!-- 				<p:column headerText="Obs."> -->
+	<!-- 					<h:outputText value="#{item.dsObservacao}" /> -->
+	<!-- 				</p:column> -->
+					<p:column headerText="Dentista">
+						<h:outputText value="#{item.tbDentista.dsNome}" />
+					</p:column>
+					<p:column headerText="Total" style="text-align: right;">
+		    			#{fechamentoCaixaBean.acumulaValor(item.tbTipoPgto.id, item.vlPago)}
+		    			<h:outputText value="#{item.vlPago}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+						<h:outputText value=" (#{item.qtParcelas}x)"
+							rendered="#{item.vlParcela ne null}" />
+					</p:column>
+					<p:summaryRow>
+						<p:column colspan="3" style="text-align: right;color: #999999">
+							<h:outputText value="#{item.tbTipoPgto.dsNome}:  " />
+							<h:outputText value="#{fechamentoCaixaBean.valorAcumulado}">
+								<f:convertNumber type="currency" currencySymbol="R$" />
+							</h:outputText>
+						</p:column>
+					</p:summaryRow>
+					<p:columnGroup type="footer">
+						<p:row>
+							<p:column styleClass="totalPagamentos verde" style="text-align: right;" colspan="3">
+								<f:facet name="footer">
+									<h:outputText value="Total Movimentado: " />
+									<h:outputText value="#{fechamentoCaixaBean.vlTotalEntrada}">
+										<f:convertNumber type="currency" currencySymbol="R$ " />
+									</h:outputText>
+								</f:facet>
+							</p:column>
+						</p:row>
+					</p:columnGroup>
+				</p:dataTable>
+	
+				<!-- 
+					Despesas com fluxo 
+				-->			
+				<p:dataTable id="dtbComFluxo" value="#{fechamentoCaixaBean.saidasComFluxo}"
+					var="item" styleClass="divDireita" style="margin-top: 12px"
+					emptyMessage="Nenhum registro encontrado.">
+					<f:facet name="header"> 
+						Despesas
+					</f:facet>
+					<p:column headerText="Despesa">
+						<h:outputText value="#{item.tbFornecedor.dsNome}" />
+					</p:column>
+					<p:column headerText="Obs.">
+						<h:outputText value="#{item.dsDescricao}" />
+					</p:column>
+					<p:column headerText="Total">
+						<h:outputText value="#{item.vlPago}" >
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</p:column>
+					<p:columnGroup type="footer">
+						<p:row>
+							<p:column  style="text-align: right;" styleClass="totalDespesas vermelha" colspan="3">
+								<f:facet name="footer">
+									<h:outputText value="Total Despesas: " />
+									<h:outputText value="#{fechamentoCaixaBean.vlTotalSaidaComFluxo}">
+										<f:convertNumber type="currency" currencySymbol="R$ " />
+									</h:outputText>
+								</f:facet>
+							</p:column>
+						</p:row>
+					</p:columnGroup>
+				</p:dataTable>
+			
+				<!-- 
+					Despesas sem fluxo 
+				-->
+				<p:dataTable id="dtbSemFluxo" value="#{fechamentoCaixaBean.saidasSemFluxo}"
+					var="item" styleClass="divDireita" style="margin-top: 12px"
+					emptyMessage="Nenhum registro encontrado." >
+					<f:facet name="header"> 
+						Despesas Fora do Fluxo
+					</f:facet>
+					<p:column headerText="Despesa">
+						<h:outputText value="#{item.tbFornecedor.dsNome}" />
+					</p:column>
+					<p:column headerText="Obs.">
+						<h:outputText value="#{item.dsDescricao}" />
+					</p:column>
+					<p:column headerText="Total" style="text-align: right;">
+						<h:outputText value="#{item.vlPago}" >
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</p:column>
+					<p:columnGroup type="footer">
+						<p:row>
+							<p:column  style="text-align: right;" styleClass="totalDespesas vermelha" colspan="3">
+								<f:facet name="footer">
+									<h:outputText value="Total Despesas Fora do Fluxo: " />
+									<h:outputText value="#{fechamentoCaixaBean.vlTotalSaidaSemFluxo}">
+										<f:convertNumber type="currency" currencySymbol="R$ " />
+									</h:outputText>
+								</f:facet>
+							</p:column>					
+						</p:row>
+					</p:columnGroup>
+				</p:dataTable>				
+			</p:outputPanel>
+				
+			<!--  Modal de agenda  -->
+			<p:dialog widgetVar="dlgFechamento"
+				header="Fechamento do Fluxo de Caixa" resizable="false"
+				modal="true" closeOnEscape="true" responsive="true">
+
+				<p:outputPanel id="outFechamento">
+
+					<p:panelGrid columns="2">
+
+				        <p:outputLabel value="Responsável" for="idResponsavel" />			
+						<p:selectOneMenu id="idResponsavel" value="#{fechamentoCaixaBean.idResponsavel}">
+							<f:selectItem itemLabel="" itemValue="" />
+							<f:selectItems value="#{homeMB.dentistas}" var="item"
+								itemLabel="#{item.dsNome}" itemValue="#{item.id}" />
+						</p:selectOneMenu>
+						
+						<h:outputLabel for="dataFechamento" value="Data:" />
+						<p:calendar id="dataFechamento" pattern="dd/MM/yyyy" mask="true"
+							value="#{fechamentoCaixaBean.dataFechamento}" locale="pt">
+						</p:calendar>
+				
+						<h:outputLabel for="Mensagem" value="Mensagem / Observações:" />
+						<p:inputTextarea rows="10" cols="30" autoResize="false"
+							maxlength="300" id="Mensagem" 
+							value="#{fechamentoCaixaBean.textoMensagem}" />
+
+			    		<p:outputLabel for="botoes"/>
+			    		<p:outputPanel id="botoes">
+							<p:commandLink id="lnkPesquisar" process="outFechamento"
+								update="@form" action="#{fechamentoCaixaBean.salvarCaixa}">
+								<i class="fa fa-check"></i>
+								<span>Salvar</span>
+							</p:commandLink>
+							<p:commandLink onclick="PF('dlgFechamento').hide();return false;" >
+								<i class="fa fa-remove"></i><span>Cancelar</span>
+							</p:commandLink>
+			    		</p:outputPanel>
+		    				
+					</p:panelGrid>
+			
+				</p:outputPanel>
+
+			</p:dialog>
+			
+			<p:outputPanel id="outPDF" rendered="#{fechamentoCaixaBean.caixaEncontrado ne null}">
+	        	<pe:documentViewer locale="pt" height="480" url="/resources/gerado/#{fechamentoCaixaBean.nomeArquivoGerado}"/>
+        	</p:outputPanel>
+        
+		</h:form>
+		
+	</ui:define>
+	
+</ui:composition>

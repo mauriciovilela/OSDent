@@ -1,0 +1,54 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:o="http://omnifaces.org/ui">
+
+    <ui:define name="titulo">#{contaBean.editando ? 'Atualização de Conta' : 'Cadastro de Conta'}</ui:define>
+    
+    <ui:define name="corpo">
+    	<f:metadata>
+    		<o:viewParam name="conta" value="#{contaBean.conta}" />
+    		<f:event listener="#{contaBean.inicializar}" type="preRenderView" />
+    	</f:metadata>
+    
+    	<h:form>
+
+	    	<p:messages autoUpdate="true" closable="true" />
+	    	
+	    	<p:panelGrid columns="2" id="painel">
+	    						
+				<f:facet name="header"> 
+				    #{contaBean.editando ? 'Atualização de Vencimento' : 'Cadastro de Vencimento'}
+				</f:facet>	    
+				
+	    		<p:outputLabel value="Descrição" for="dsDescricao"/>
+	    		<p:inputText id="dsDescricao" maxlength="100" value="#{contaBean.conta.dsDescricao}"/>
+	    				    				
+	    		<p:outputLabel value="Conta fixa?" for="contaFixa"/>
+	    		<p:selectBooleanCheckbox id="contaFixa" value="#{contaBean.conta.contaFixa}" />
+	 		    						    						    			
+	    		<p:outputLabel value="Data vencimento" for="vencimento"/>
+	    		<p:calendar id="vencimento" pattern="dd/MM/yyyy" mask="true" 
+	    			value="#{contaBean.conta.dtVencimento}" locale="pt" />
+	    			 				
+	    		<p:outputLabel value="Valor (Opcional)" for="vlTotal" />
+	    		<pe:inputNumber id="vlTotal" value="#{contaBean.conta.vlTotal}" />
+	    			
+	    		<p:outputLabel for="botoes"/>
+	    		<p:outputPanel id="botoes">
+					<p:commandLink id="lnkSalvar" update="@form" action="#{contaBean.salvar}">
+						<i class="fa fa-fw fa-check"></i><span>Salvar</span>
+					</p:commandLink>
+					<p:link outcome="/restrita/conta/ContaPesquisa">
+						<i class="fa fa-fw fa-arrow-circle-left"></i><span>Pesquisar</span>
+					</p:link>
+	    		</p:outputPanel>
+	    		
+	    	</p:panelGrid>
+    	</h:form>
+    </ui:define>
+</ui:composition>

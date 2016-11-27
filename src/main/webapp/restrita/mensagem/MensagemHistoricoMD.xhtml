@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+     
+    <h:head>
+    	<meta http-equiv="Content-Type" content="width=device-width, initial-scale=1; text/html; charset=UTF-8" />
+    	<h:outputStylesheet library="css" name="sistema.css" />
+        <title>Histórico de Mensagens</title>
+    </h:head>
+     
+    <h:body>
+        
+        <h:form>
+        	<div class="ui-fluid">
+        	
+            <p:dataTable reflow="true" var="item" value="#{mensagemHistoricoMDBean.historico}" emptyMessage="Nenhum registro encontrado"
+            	rows="10" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom" lazy="true">
+	    		<p:column headerText="Data">
+	    			<h:outputText value="#{item.dtInclusao}" >
+	    				<f:convertDateTime pattern="dd/MM/yyyy HH:mm" locale="pt" />  
+	    			</h:outputText>
+	    		</p:column>		    			    		
+	    		<p:column headerText="Enviado por">
+	    			<h:outputText value="#{item.tbSolicitante.dsNome}" />
+	    		</p:column>	  		
+	    		<p:column headerText="Mensagem" >
+	    			<h:outputText value="#{item.dsDescricao}"  />
+	    		</p:column>	  		
+            </p:dataTable>
+            
+            </div>
+                      
+        </h:form>
+        
+    </h:body>
+     
+</html>

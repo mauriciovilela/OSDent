@@ -1,0 +1,114 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Despesas</ui:define>
+    
+    <ui:define name="corpo">
+    	<h:form id="frmPesquisa">
+
+	    	<p:messages autoUpdate="true" closable="true" />
+	 
+	    	<p:panelGrid columns="2" id="painel">
+				
+				<f:facet name="header"> 
+					Pesquisa de Despesas 
+				</f:facet>	    		
+					    		    			
+	    		<p:outputLabel value="Despesas de Hoje" for="despesaHoje" />
+	    		<p:selectBooleanCheckbox id="despesaHoje" value="#{saidaBeanPesquisa.despesasHoje}" >
+	    			<p:ajax listener="#{saidaBeanPesquisa.verifica}" update="@form" />
+	    		</p:selectBooleanCheckbox>
+	    		
+				<p:outputLabel value="Início" for="inicio" rendered="#{!saidaBeanPesquisa.despesasHoje}" />
+				<p:calendar id="inicio" pattern="dd/MM/yyyy" mask="true"
+					value="#{saidaBeanPesquisa.dataDespesaInicio}" locale="pt" 
+					rendered="#{!saidaBeanPesquisa.despesasHoje}" />
+					
+				<p:outputLabel value="Final" for="fim" rendered="#{!saidaBeanPesquisa.despesasHoje}" />
+				<p:calendar id="fim" pattern="dd/MM/yyyy" mask="true"
+					value="#{saidaBeanPesquisa.dataDespesaFim}" locale="pt" 
+					rendered="#{!saidaBeanPesquisa.despesasHoje}" />
+	
+				<p:outputLabel value="Tipo Despesa" for="idTipoDespesa" />
+				<p:selectOneMenu id="idTipoDespesa" filter="true"
+					value="#{saidaBeanPesquisa.idTipoDespesa}">
+					<f:selectItem itemLabel="" itemValue="" />
+					<f:selectItems value="#{homeMB.fornecedores}" var="item"
+						itemLabel="#{item.dsNome}" itemValue="#{item.id}" />
+				</p:selectOneMenu>
+	
+	    		<p:outputLabel for="botoes"/>
+	    		<p:outputPanel id="botoes">
+					<p:commandLink id="lnkPesquisar" update="@form" action="#{saidaBeanPesquisa.pesquisar}">
+						<i class="fa fa-fw fa-search"></i><span>Pesquisar</span>
+					</p:commandLink>
+	    		</p:outputPanel>
+	    		
+	    		<p:defaultCommand target="lnkPesquisar" />
+	    		
+	    	</p:panelGrid>
+	    	
+	    	<p:dataTable reflow="true" id="dtbRegistros" value="#{saidaBeanPesquisa.filtrados}" var="item"
+	    		style="margin-top: 12px" emptyMessage="Nenhum registro encontrado.">
+	    		<p:column style="width: 35px; text-align: center">
+<!-- 	    			<p:link outcome="/restrita/saida/Saida"> -->
+<!-- 	    				<i class="fa fa-fw fa-edit"></i> -->
+<!-- 	    				<f:param name="saida" value="#{item.id}" /> -->
+<!-- 	    			</p:link> 			 -->
+	    			<p:commandLink title="Excluir" oncomplete="PF('confirmacaoExclusao').show()"
+	    					process="@this" update=":frmPesquisa:confirmacaoExclusaoDialog">
+	    					<i class="fa fa-fw fa-trash"></i>
+						<f:setPropertyActionListener target="#{saidaBeanPesquisa.selecionado}" 
+	    					value="#{item}" />	    					
+	    			</p:commandLink>		    			
+	    		</p:column>
+	    		<p:column headerText="Tipo de Gasto">
+	    			<h:outputText value="#{item.tbFornecedor.dsNome}" />
+	    		</p:column>
+	    		<p:column headerText="Sócio INSS">
+	    			<h:outputText value="#{item.tbSocioInss.dsNome}" />
+	    		</p:column>
+	    		<p:column headerText="Descrição">
+	    			<h:outputText value="#{item.dsDescricao}" />
+	    		</p:column>
+	    		<p:column headerText="Data">
+	    			<h:outputText value="#{item.dtCompra}" >
+	    				<f:convertDateTime pattern="dd/MM/yyyy" />
+	    			</h:outputText>
+	    		</p:column>
+	    		<p:column headerText="Total">
+	    			<h:outputText value="#{item.vlTotal}" >
+	    				<f:convertNumber type="currency"/>
+	    			</h:outputText>	    		
+	    		</p:column>
+	    		<p:column headerText="Fluxo Caixa?">
+	    			<h:outputText value="#{item.flFluxoCaixa ? 'Sim' : 'Não'}" />
+	    		</p:column>	    		
+	    		<p:column headerText="Valor Pago">
+	    			<h:outputText value="#{item.vlPago}" >
+	    				<f:convertNumber type="currency"/>
+	    			</h:outputText>	    	
+	    		</p:column>
+	    		<p:column headerText="Pct %">
+	    			<h:outputText value="#{item.vlPago eq item.vlTotal ? '' : (item.vlPago/item.vlTotal)*100}" >
+	    				<f:convertNumber pattern="#0" />
+	    			</h:outputText>	    				
+	    		</p:column>	    		
+	    	</p:dataTable>
+	    	
+	    	<p:confirmDialog header="Exclusão" 
+	    		message="Tem certeza que deseja excluir ?"
+	    		widgetVar="confirmacaoExclusao"	id="confirmacaoExclusaoDialog">
+	    		<p:commandButton value="Sim" oncomplete="PF('confirmacaoExclusao').hide();"
+	    			action="#{saidaBeanPesquisa.excluir}" process="@this"
+	    			update=":frmPesquisa:dtbRegistros" />
+	    		<p:button value="Não" onclick="PF('confirmacaoExclusao').hide(); return false;" />
+	    	</p:confirmDialog>
+	    	
+    	</h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,93 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:o="http://omnifaces.org/ui">
+
+    <ui:define name="titulo">#{retiradaBean.editando ? 'Edição de registro' : 'Novo registro'}</ui:define>
+    
+    <ui:define name="corpo">
+    
+    	<f:metadata>
+    		<o:viewParam name="retirada" value="#{retiradaBean.retirada}" />
+    		<f:event listener="#{retiradaBean.inicializar}" type="preRenderView" />
+    	</f:metadata>	
+    
+    	<h:form>
+	    	<p:messages autoUpdate="true" closable="true" />
+	    	
+	    	<p:panelGrid columns="4" id="painel" >
+				
+				<f:facet name="header"> 
+					Fechamento de Fluxo Mensal
+				</f:facet>
+	    			
+	    		<p:outputLabel value="Data Inicio" for="dtInicio"/>
+	    		<p:calendar id="dtInicio" pattern="dd/MM/yyyy" mask="true" 
+	    			value="#{retiradaBean.retirada.dtInicio}" locale="pt" disabled="true" />
+	    			
+	    		<p:outputLabel value="Data Fim" for="dtFim"/>
+	    		<p:calendar id="dtFim" pattern="dd/MM/yyyy" mask="true" 
+	    			value="#{retiradaBean.retirada.dtFim}" locale="pt" disabled="true" />
+	    			
+	    		<p:outputLabel value="Data Retirada" for="dtRetirada"/>
+	    		<p:calendar id="dtRetirada" pattern="dd/MM/yyyy" mask="true" 
+	    			value="#{retiradaBean.retirada.dtRetirada}" locale="pt" />
+	    			
+	    		<p:outputLabel value="Total Bruto" for="vlBruto"/>
+	    		<pe:inputNumber id="vlBruto" value="#{retiradaBean.retirada.vlBruto}" />
+	    			
+	    		<p:outputLabel value="Total Despesa" for="vlDespesa"/>
+	    		<pe:inputNumber id="vlDespesa" value="#{retiradaBean.retirada.vlDespesa}" />
+	    			
+	    		<p:outputLabel value="Total Líquido" for="vlLiquido"/>
+	    		<pe:inputNumber id="vlLiquido" value="#{retiradaBean.retirada.vlLiquido}" />
+	    			
+	    		<p:outputLabel value="Total Cartão" for="vlCartao"/>
+	    		<pe:inputNumber id="vlCartao" value="#{retiradaBean.retirada.vlCartao}" />
+	    			
+	    		<p:outputLabel value="Total Cheque" for="vlCheque"/>
+	    		<pe:inputNumber id="vlCheque" value="#{retiradaBean.retirada.vlCheque}" />
+	    			
+	    		<p:outputLabel value="Total Dinheiro" for="vlDinheiro"/>
+	    		<pe:inputNumber id="vlDinheiro" value="#{retiradaBean.retirada.vlDinheiro}" />
+	    			
+	    		<p:outputLabel value="Total Extrato Bancário" for="vlExtratoBancario"/>
+	    		<pe:inputNumber id="vlExtratoBancario" value="#{retiradaBean.retirada.vlExtratoBancario}" />
+	    			
+	    		<p:outputLabel value="Fluxo Caixa" for="vlCaixa"/>
+	    		<pe:inputNumber id="vlCaixa" value="#{retiradaBean.retirada.vlCaixa}" />
+	    			
+	    		<p:outputLabel value="Fluxo Caixa Anterior" for="vlCaixaAnterior"/>
+	    		<pe:inputNumber id="vlCaixaAnterior" value="#{retiradaBean.retirada.vlCaixaAnterior}" />
+	    			
+	    		<p:outputLabel value="Fluxo Caixa Atual" for="vlCaixaAtual"/>
+	    		<pe:inputNumber id="vlCaixaAtual" value="#{retiradaBean.retirada.vlCaixaAtual}" />
+	    			
+	    		<p:outputLabel value="Total Retirada" for="vlRetirada"/>
+	    		<pe:inputNumber id="vlRetirada" value="#{retiradaBean.retirada.vlRetirada}" />
+	    			
+	    		<p:outputLabel value="Total Retirada Individual" for="vlRetiradaIndividual"/>
+	    		<pe:inputNumber id="vlRetiradaIndividual" value="#{retiradaBean.retirada.vlRetiradaIndividual}" />
+	    						 	    		
+	    		<p:outputLabel value="Observação" for="dsObservacao"/>
+	    		<p:inputTextarea id="dsObservacao" maxlength="200" 
+	    			value="#{retiradaBean.retirada.dsDescricao}" />	    		
+	    			    	    			
+	    		<p:outputLabel for="botoes"/>
+	    		<p:outputPanel id="botoes">
+					<p:commandLink id="lnkSalvar" update="@form" action="#{retiradaBean.salvar}">
+						<i class="fa fa-fw fa-check"></i><span>Salvar</span>
+					</p:commandLink>
+					<p:link outcome="/restrita/relatorio/RptFluxoCaixa.xhtml">
+						<i class="fa fa-fw fa-arrow-circle-left"></i><span>Voltar</span>
+					</p:link>
+	    		</p:outputPanel>
+	    		
+	    	</p:panelGrid>
+    	</h:form>
+    </ui:define>
+</ui:composition>

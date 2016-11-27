@@ -1,0 +1,60 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:o="http://omnifaces.org/ui">
+
+    <ui:define name="titulo">#{fornecedorBean.editando ? 'Edição de registro' : 'Novo registro'}</ui:define>
+    
+    <ui:define name="corpo">
+    	<f:metadata>
+    		<o:viewParam name="fornecedor" value="#{fornecedorBean.fornecedor}" />
+    		<f:event listener="#{fornecedorBean.inicializar}" type="preRenderView" />
+    	</f:metadata>
+    
+    	<h:form>
+
+	    	<p:messages autoUpdate="true" closable="true" />
+	    	
+	    	<p:panelGrid columns="2" id="painel">
+	    						
+				<f:facet name="header"> 
+				    #{fornecedorBean.editando ? 'Edição de registro' : 'Novo registro'}
+				</f:facet>	    
+				
+	    		<p:outputLabel value="Nome" for="dsNome"/>
+	    		<p:inputText id="dsNome" maxlength="100" value="#{fornecedorBean.fornecedor.dsNome}"/>
+	    				    				
+	    		<p:outputLabel value="Dental?" for="flDental"/>
+	    		<p:selectBooleanCheckbox id="flDental" value="#{fornecedorBean.fornecedor.flDental}" />
+	    			    	    				    				    				
+	    		<p:outputLabel value="Dentista com porcentagem?" for="flPct"/>
+	    		<p:selectBooleanCheckbox id="flPct" value="#{fornecedorBean.fornecedor.flPorcentagem}" />
+									    	    				    				    				
+	    		<p:outputLabel value="Tem Sócio Responsável?" for="flSocioResponsavel"/>
+	    		<p:selectBooleanCheckbox id="flSocioResponsavel" value="#{fornecedorBean.fornecedor.flSocioResponsavel}" />
+														    		
+				<p:outputLabel value="Categoria" for="categoria" />  
+		        <p:selectOneMenu id="categoria" 
+		        	value="#{fornecedorBean.fornecedor.tbFornecedorPai}" filter="true">  
+		            <f:selectItem itemLabel="" itemValue="" />  
+		            <f:selectItems value="#{homeMB.fornecedoresCategoria}"
+		            	var="item" itemLabel="#{item.dsNome}" itemValue="#{item}" />  
+		        </p:selectOneMenu> 
+		        
+	    		<p:outputLabel for="botoes"/>
+	    		<p:outputPanel id="botoes">
+					<p:commandLink id="lnkSalvar" update="@form" action="#{fornecedorBean.salvar}">
+						<i class="fa fa-fw fa-check"></i><span>Salvar</span>
+					</p:commandLink>
+					<p:link outcome="/restrita/fornecedor/FornecedorPesquisa">
+						<i class="fa fa-fw fa-arrow-circle-left"></i><span>Voltar</span>
+					</p:link>
+	    		</p:outputPanel>
+	    		
+	    	</p:panelGrid>
+    	</h:form>
+    </ui:define>
+</ui:composition>

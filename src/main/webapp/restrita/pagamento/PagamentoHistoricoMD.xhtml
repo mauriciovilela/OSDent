@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+     
+    <h:head>
+    	<meta http-equiv="Content-Type" content="width=device-width, initial-scale=1; text/html; charset=UTF-8" />
+    	<h:outputStylesheet library="css" name="sistema.css" />
+        <title>Histórico de pagamentos</title>
+    </h:head>
+     
+    <h:body>
+    	<f:metadata>
+    		<f:event type="preRenderView" listener="#{pagamentoHistoricoMDBean.inicializar}" />
+    	</f:metadata>    
+        <h:form>
+        	<div class="grid-modal">
+	            <p:dataTable var="item" value="#{pagamentoHistoricoMDBean.historico}" emptyMessage="Nenhum registro encontrado">
+		    		<p:column headerText="Tipo">
+		    			<h:outputText value="#{item.tbTipoPgto.dsNome}" />
+		    		</p:column>	  					    		           
+		    		<p:column headerText="Data">
+		    			<h:outputText value="#{item.dtEntrada}" >
+		    				<f:convertDateTime pattern="dd/MM/yy" />
+		    			</h:outputText>
+		    		</p:column>		    		
+		    		<p:column headerText="Total R$">
+		    			<h:outputText value="#{item.vlTotal}" >
+							<f:convertNumber pattern="#0.00" />
+		    			</h:outputText>
+		    			<h:outputText value=" #{item.qtParcelas}x" rendered="#{item.vlParcela ne null}" />
+		    		</p:column>		    		
+		    		<p:column headerText="Pago R$">
+		    			<h:outputText value="#{item.vlPago}" >
+							<f:convertNumber pattern="#0.00" />
+		    			</h:outputText>
+		    		</p:column>		  
+	            </p:dataTable>
+          	</div>
+        </h:form>
+    </h:body>
+     
+</html>

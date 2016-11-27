@@ -1,0 +1,83 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:o="http://omnifaces.org/ui">
+
+    <ui:define name="titulo">#{saidaBean.editando ? 'Edição de registro' : 'Novo registro'}</ui:define>
+    
+    <ui:define name="corpo">
+    
+    	<f:metadata>
+    		<o:viewParam name="saida" value="#{saidaBean.saida}" />
+    		<f:event listener="#{saidaBean.inicializar}" type="preRenderView" />
+    	</f:metadata>	
+    
+    	<h:form>
+	    	<p:messages autoUpdate="true" closable="true" />
+	    	
+	    	<p:panelGrid columns="2" id="painel">
+				
+				<f:facet name="header"> 
+					Despesa
+				</f:facet>
+	    			
+				<p:outputLabel value="Tipo de Gasto" for="idFornecedor" />  
+		        <p:selectOneMenu id="idFornecedor" value="#{saidaBean.saida.tbFornecedor}" filter="true">  
+		        	<p:ajax listener="#{saidaBean.carregaDados}" update="@form" />
+		            <f:selectItem itemLabel="" itemValue="" />  
+		            <f:selectItems value="#{homeMB.fornecedores}"
+		            	var="item" itemLabel="#{item.dsNome}" itemValue="#{item}" />  
+		        </p:selectOneMenu> 	    			
+		        	    													    		
+				<p:outputLabel value="Sócio Responsável" for="dentistaINSS" rendered="#{saidaBean.temSocioResponsavel}" />  
+		        <p:selectOneRadio id="dentistaINSS" 
+		        	value="#{saidaBean.idSocioINSS}" filter="true" rendered="#{saidaBean.temSocioResponsavel}">  
+		            <f:selectItems value="#{homeMB.socios}"
+		            	var="item" itemLabel="#{item.dsNome}" itemValue="#{item.id}" />  
+		        </p:selectOneRadio> 
+		           		
+	    		<p:outputLabel value="Valor total" for="vlTotal"/>
+	    		<pe:inputNumber id="vlTotal" maxlength="10" value="#{saidaBean.saida.vlTotal}" >
+	    		</pe:inputNumber>	    		
+	
+				<p:outputLabel value="Porcentagem" for="idPct" 
+					rendered="#{saidaBean.temPorcentagem}" />  
+				<p:selectOneRadio id="idPct" value="#{saidaBean.valorPorcentagem}" 
+					rendered="#{saidaBean.temPorcentagem}">  
+					<f:selectItem itemLabel="30 %" itemValue="0.3" />  
+					<f:selectItem itemLabel="40 %" itemValue="0.4" />  
+					<f:selectItem itemLabel="50 %" itemValue="0.5" />  
+					<p:ajax listener="#{saidaBean.atualizaValores}" process="@this vlTotal" update="vlPago" />
+				</p:selectOneRadio> 
+				
+	    		<p:outputLabel value="Valor Pago" for="vlPago" rendered="#{saidaBean.temPorcentagem}" />
+	    		<pe:inputNumber id="vlPago" value="#{saidaBean.valorPago}" rendered="#{saidaBean.temPorcentagem}" />
+	 		    						    			
+	    		<p:outputLabel value="Data pagamento" for="dtCompra"/>
+	    		<p:calendar id="dtCompra" pattern="dd/MM/yyyy" mask="true" 
+	    			value="#{saidaBean.saida.dtCompra}" locale="pt" />
+	    		
+	    		<p:outputLabel value="Será lançado no fluxo de caixa?" for="flFluxoCaixa"/>
+	    		<p:selectBooleanCheckbox id="flFluxoCaixa" value="#{saidaBean.fluxoCaixa}" />
+	    			    				 	    		
+	    		<p:outputLabel value="Observação" for="dsNome"/>
+	    		<p:inputTextarea id="dsNome" maxlength="150" value="#{saidaBean.saida.dsDescricao}" />
+	    			
+	    		<p:outputLabel for="botoes"/>
+	    		<p:outputPanel id="botoes">
+					<p:commandLink id="lnkPesquisar" update="@form" action="#{saidaBean.salvar}">
+						<i class="fa fa-fw fa-check"></i><span>Salvar</span>
+					</p:commandLink>
+					<p:link outcome="/restrita/saida/SaidaPesquisa">
+						<i class="fa fa-fw fa-arrow-circle-left"></i><span>Pesquisar Despesa</span>
+					</p:link>
+	    		</p:outputPanel>
+	    		
+	    	</p:panelGrid>
+    	</h:form>
+    </ui:define>
+</ui:composition>
