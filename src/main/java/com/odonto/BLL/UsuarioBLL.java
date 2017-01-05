@@ -73,7 +73,8 @@ public class UsuarioBLL implements Serializable {
 		criteria.add(Restrictions.eq("flAtivo", Constants.SIM));
 		criteria.setProjection( Projections.projectionList()
 			    .add( Projections.property("id").as("id") )
-			    .add( Projections.property("dsNome").as("dsNome") ));
+			    .add( Projections.property("dsNome").as("dsNome") )
+			    .add( Projections.property("dsEmail").as("dsEmail") ));
 		criteria.setResultTransformer(new AliasToBeanResultTransformer(UsuarioOUT.class));			
 		return criteria.list();
 	}	

@@ -309,9 +309,10 @@ public class FechamentoCaixaBean implements Serializable {
 			fileOutputStream.close();
 
 			if (envioEmailCaixa) {
+				final List<UsuarioOUT> socios = usuarioBLL.listarSocios();
 				Thread thread = new Thread() {
 					public void run() {
-						enviarEmail(arquivoGerar, data);
+						enviarEmail(arquivoGerar, data, socios);
 					}
 				};
 				thread.start();
@@ -323,9 +324,10 @@ public class FechamentoCaixaBean implements Serializable {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void enviarEmail(String caminho, Date dataFechamento) {
+	private void enviarEmail(String caminho, Date dataFechamento, List<UsuarioOUT> socios) {
 		try {
-			List<UsuarioOUT> socios = usuarioBLL.listarSocios();
+			logger.info("Tentando enviar e-mail (Fechamento caixa): ");
+//			List<UsuarioOUT> socios = usuarioBLL.listarSocios();
 			for (UsuarioOUT socio : socios) {
 				// Verifica se tem e-mail
 				if (StringUtils.isNotBlank(socio.getDsEmail())) {

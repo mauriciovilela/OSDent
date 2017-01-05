@@ -56,12 +56,42 @@ public class JobAgenda implements org.quartz.Job {
 		AppConfigProperties prop = new AppConfigProperties();
 		config = prop.init();
 		if (config.isMailEnvio()) {
-			enviaEmail();
+			enviaEmailComAgenda();
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void enviaEmail() {
+	private void enviaEmailComAgenda() {
+
+		StringBuilder strEnvio = new StringBuilder();
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		int dayWeek = calendar.get(Calendar.DAY_OF_WEEK);
+		calendar.add(Calendar.DATE, 1);
+		strEnvio.append(enviarEmail(calendar));
+		
+		// Caso a data atual seja Sexta-feira, envia o e-mail com a agenda de Segunda-feira
+		if (dayWeek == Calendar.FRIDAY) {
+			calendar.add(Calendar.DATE, 3);
+			strEnvio.append(enviarEmail(calendar));
+		}
+
+		if (!StringUtils.isEmpty(strEnvio)) {
+			// Grava log de auditoria
+			TbAuditoria audit = new TbAuditoria();
+			String mensagem = "E-mail enviado com a agenda para: " + strEnvio.toString();
+			audit.setDsDescricao(mensagem);
+			auditoriaService.salvar(audit);
+			logger.info(mensagem);
+		}
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private String enviarEmail(Calendar calendar) {
+
+		List<UsuarioOUT> dentistas = usuarioBLL.listarDentitas();
+		StringBuilder strLogEnvio = new StringBuilder();
+		StringBuilder strProcedimentos = null;
 
 		VelocityEngine ve = new VelocityEngine();
 		Properties velocityProp = new Properties();
@@ -70,22 +100,13 @@ public class JobAgenda implements org.quartz.Job {
 		velocityProp.setProperty("output.encoding", "UTF-8");
 		ve.init(velocityProp);
 
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(new Date());
-		calendar.add(Calendar.DATE, 1);
-
-		List<UsuarioOUT> dentistas = usuarioBLL.listarDentitas();
-		StringBuilder strDentista = new StringBuilder();
-		StringBuilder strProcedimentos = null;
-		boolean emailEnviado = false;
-
 		// Todos os dentistas
 		for (UsuarioOUT dentista : dentistas) {
 			
 			// Verifica se tem e-mail
 			if (StringUtils.isNotBlank(dentista.getDsEmail())) {
 				
-				strDentista.append(dentista.getDsEmail() + ", ");
+				strLogEnvio.append(dentista.getDsEmail() + ", ");
 				// Lista a agenda do proximo dia do Dentista
 				List<AgendaOUT> agendaDentista = agendaBLL.listarPorDentista(
 						dentista.getId(), calendar.getTime(), calendar.getTime(), false);
@@ -123,21 +144,13 @@ public class JobAgenda implements org.quartz.Job {
 
 					try {
 						enviarEmail(dentista, writer.toString(), calendar);
-						emailEnviado = true;
 					} catch (EmailException e) {
 						logger.error(e);
 					}
 				}
 			}
 		}
-		if (emailEnviado) {
-			// Grava log de auditoria
-			TbAuditoria audit = new TbAuditoria();
-			String mensagem = "E-mail enviado com a agenda para: " + strDentista.toString();
-			audit.setDsDescricao(mensagem);
-			auditoriaService.salvar(audit);
-			logger.info(mensagem);
-		}
+		return strLogEnvio.toString();
 	}
 
 	@SuppressWarnings("deprecation")

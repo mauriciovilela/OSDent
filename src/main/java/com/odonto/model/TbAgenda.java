@@ -12,10 +12,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
+
+// , uniqueConstraints=@UniqueConstraint(columnNames={"ID_PACIENTE", "DT_INICIO", "DT_FIM", "ID_AGENDA_STATUS"})
 
 @Entity
-@Table(name="tb_agenda" , uniqueConstraints=@UniqueConstraint(columnNames={"ID_PACIENTE", "DT_INICIO", "DT_FIM", "ID_AGENDA_STATUS"}) )
+@Table(name="tb_agenda" )
 public class TbAgenda implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

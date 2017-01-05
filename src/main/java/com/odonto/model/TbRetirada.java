@@ -67,10 +67,6 @@ public class TbRetirada implements Serializable {
 	@Column(name = "VL_DINHEIRO")
 	private BigDecimal vlDinheiro;
 
-//	@NotNull
-//	@Column(name = "VL_DINHEIRO_RESTO")
-//	private BigDecimal vlRestanteDinheiro;
-
 	@NotNull
 	@Column(name = "VL_EXTRATO_BANCARIO")
 	private BigDecimal vlExtratoBancario;
