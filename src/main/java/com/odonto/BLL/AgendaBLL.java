@@ -4,8 +4,12 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
 import org.hibernate.Criteria;
@@ -30,6 +34,10 @@ public class AgendaBLL implements Serializable {
 
 	@Inject
 	private EntityManager manager;
+	
+	@Inject
+	@PersistenceContext(unitName="Clinica2")
+	private EntityManager  manager2;
 
 	public TbAgenda porId(Integer id) {
 		return manager.find(TbAgenda.class, id);
@@ -38,6 +46,7 @@ public class AgendaBLL implements Serializable {
 	public TbAgenda guardar(TbAgenda item) {
 		try {
 			item.setTbUsuario(SessionContext.getInstance().getUsuarioLogado());
+			manager2.merge(item);
 			return manager.merge(item);	
 		} catch (PersistenceException e) {
 			if (e.getCause() instanceof ConstraintViolationException) {
@@ -74,11 +83,12 @@ public class AgendaBLL implements Serializable {
 			    .add( Projections.property("dtInicio").as("dtInicio") )
 			    .add( Projections.property("dtFim").as("dtFim") )
 			    .add( Projections.property("AS.dsNome").as("dsAgendaStatus") )
+			    .add( Projections.property("AS.dsCor").as("dsCor") )
 			    .add( Projections.property("AS.id").as("idAgendaStatus") )
 			    .add( Projections.property("dsDescricao").as("dsDescricao") )
 			    .add( Projections.property("PR.dsDescricao").as("dsProcedimento") )
 			    .add( Projections.property("P.dsNome").as("dsPaciente") ));
-		criteria.setResultTransformer(new AliasToBeanResultTransformer(AgendaOUT.class));			
+		criteria.setResultTransformer(new AliasToBeanResultTransformer(AgendaOUT.class));	
 		return criteria.list();
 	}
 	

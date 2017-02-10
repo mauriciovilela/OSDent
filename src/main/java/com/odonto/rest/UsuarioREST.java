@@ -10,7 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.springframework.web.bind.annotation.RequestBody;
+//import org.springframework.web.bind.annotation.RequestBody;
 
 import com.odonto.BLL.UsuarioBLL;
 import com.odonto.constants.Constants;
@@ -46,7 +46,7 @@ public class UsuarioREST {
 	@POST
 	@Path("/salvar")
 	@Produces(MediaType.APPLICATION_JSON)
-	public TbUsuario salvar( @RequestBody UsuarioOUT item ) {
+	public TbUsuario salvar(  UsuarioOUT item ) {
 		TbUsuario obj = new TbUsuario();
 		if (item.getId() != null) {
 			obj = usuarioBLL.porId(item.getId());

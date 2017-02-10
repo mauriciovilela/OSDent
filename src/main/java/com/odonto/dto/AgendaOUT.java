@@ -8,10 +8,13 @@ public class AgendaOUT implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Integer id;
+	private Integer idDentista;
 	private Date dtInicio;
 	private Date dtFim;
 	private Date dtInclusao;
-	private String dtInicioSTR;
+	private String horaInicio;
+	private String horaFim;
+	private String dtDia;
 	private String dsAgendaStatus;
 	private Integer idAgendaStatus;
 	private String dsDescricao;
@@ -19,6 +22,7 @@ public class AgendaOUT implements Serializable {
 	private String dsPaciente;
 	private String dsDentista;
 	private Long total;
+	private String dsCor;
 
 	public AgendaOUT() {
 		
@@ -27,7 +31,6 @@ public class AgendaOUT implements Serializable {
 	public Integer getId() {
 		return id;
 	}
-
 
 	public void setId(Integer id) {
 		this.id = id;
@@ -103,12 +106,22 @@ public class AgendaOUT implements Serializable {
 		this.dsPaciente = dsPaciente;
 	}
 
-	public String getDtInicioSTR() {
-		return dtInicioSTR;
+
+
+	public String getHoraInicio() {
+		return horaInicio;
 	}
 
-	public void setDtInicioSTR(String dtInicioSTR) {
-		this.dtInicioSTR = dtInicioSTR;
+	public void setHoraInicio(String horaInicio) {
+		this.horaInicio = horaInicio;
+	}
+
+	public String getHoraFim() {
+		return horaFim;
+	}
+
+	public void setHoraFim(String horaFim) {
+		this.horaFim = horaFim;
 	}
 
 	@Override
@@ -158,6 +171,30 @@ public class AgendaOUT implements Serializable {
 
 	public void setTotal(Long total) {
 		this.total = total;
+	}
+
+	public String getDtDia() {
+		return dtDia;
+	}
+
+	public void setDtDia(String dtDia) {
+		this.dtDia = dtDia;
+	}
+
+	public String getDsCor() {
+		return dsCor;
+	}
+
+	public void setDsCor(String dsCor) {
+		this.dsCor = dsCor;
+	}
+
+	public Integer getIdDentista() {
+		return idDentista;
+	}
+
+	public void setIdDentista(Integer idDentista) {
+		this.idDentista = idDentista;
 	}
 
 }

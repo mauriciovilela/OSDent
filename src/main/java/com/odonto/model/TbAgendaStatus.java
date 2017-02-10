@@ -19,6 +19,9 @@ public class TbAgendaStatus implements Serializable {
 	@Column(name="DS_NOME")
 	private String dsNome;
 
+	@Column(name="DS_COR", length=20)
+	private String dsCor;
+	
 	public Integer getId() {
 		return this.id;
 	}

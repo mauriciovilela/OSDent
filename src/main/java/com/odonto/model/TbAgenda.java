@@ -13,8 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-// , uniqueConstraints=@UniqueConstraint(columnNames={"ID_PACIENTE", "DT_INICIO", "DT_FIM", "ID_AGENDA_STATUS"})
-
 @Entity
 @Table(name="tb_agenda" )
 public class TbAgenda implements Serializable {
@@ -45,7 +43,7 @@ public class TbAgenda implements Serializable {
 	private TbProcedimento tbProcedimento;
 	
 	@ManyToOne
-	@JoinColumn(name="ID_DENTISTA")
+	@JoinColumn(name = "ID_DENTISTA")
 	private TbUsuario tbDentista;
 	
 	@ManyToOne

@@ -10,7 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.springframework.web.bind.annotation.RequestBody;
+//import org.springframework.web.bind.annotation.RequestBody;
 
 import com.odonto.BLL.UsuarioBLL;
 import com.odonto.constants.Constants;
@@ -24,7 +24,7 @@ public class PacienteREST {
 	private UsuarioBLL usuarioBLL;
 
 	@GET
-	@Path("/todos")
+	@Path("todos")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<UsuarioOUT> listarDentistas() {	
 		List<UsuarioOUT> retorno = usuarioBLL.listarDentitas();
@@ -32,7 +32,7 @@ public class PacienteREST {
 	}
 
 	@GET
-	@Path("/usuarios")
+	@Path("usuarios")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<UsuarioOUT> listarUsuario() {	
 		List<UsuarioOUT> retorno = usuarioBLL.listar(Constants.TODOS);
@@ -40,9 +40,9 @@ public class PacienteREST {
 	}
 	
 	@POST
-	@Path("/salvar")
+	@Path("salvar")
 	@Produces(MediaType.APPLICATION_JSON)
-	public TbUsuario salvar( @RequestBody TbUsuario item ) {
+	public TbUsuario salvar(  TbUsuario item ) {
 		item = usuarioBLL.guardar(item);
 		return item;
 	}
