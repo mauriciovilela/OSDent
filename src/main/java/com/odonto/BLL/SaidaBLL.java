@@ -77,6 +77,15 @@ public class SaidaBLL implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
+	public List<TbSaida> porDataExportacao(Date data) {
+		Session session = manager.unwrap(Session.class);
+		Criteria criteria = session.createCriteria(TbSaida.class);
+		criteria.add(Restrictions.gt("dtInclusao", data));
+		criteria.addOrder(Order.asc("id"));
+		return criteria.list();
+	}
+
+	@SuppressWarnings("unchecked")
 	public List<TbSaida> porTipoDataValor(Integer idTipoDespesa, Date data, BigDecimal valorTotal) {
 		Session session = manager.unwrap(Session.class);
 		Criteria criteria = session.createCriteria(TbSaida.class);
@@ -115,6 +124,6 @@ public class SaidaBLL implements Serializable {
 		criteria.setResultTransformer(new AliasToBeanResultTransformer(SaidaOUT.class));
 		criteria.addOrder(Order.desc("total"));
 		return criteria.list();
-	}
+	}	
 	
 }

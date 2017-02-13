@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -79,6 +80,16 @@ public class Util {
 		DateFormat df = new SimpleDateFormat("HH:mm");
 		String reportDate = df.format(data);
 		return reportDate;
+	}
+	
+	public static Date convertDate(String data) {
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		try {
+			return df.parse(data);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}  
 	}
 	
 	public static Date getDataHora(Date data, boolean dataInicial) {

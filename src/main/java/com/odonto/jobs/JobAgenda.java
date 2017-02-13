@@ -23,6 +23,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.odonto.BLL.AgendaBLL;
+import com.odonto.BLL.SaidaBLL;
 import com.odonto.BLL.UsuarioBLL;
 import com.odonto.dto.AgendaOUT;
 import com.odonto.dto.ConfigOUT;
@@ -44,6 +45,9 @@ public class JobAgenda implements org.quartz.Job {
 	@Inject
 	private AgendaBLL agendaBLL;
 
+	@Inject
+	private SaidaBLL saidaBLL;
+	
 	@Inject
 	private AuditoriaService auditoriaService;
 

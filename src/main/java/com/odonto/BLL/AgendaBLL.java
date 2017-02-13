@@ -4,12 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
 import org.hibernate.Criteria;
@@ -33,11 +29,7 @@ public class AgendaBLL implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	private EntityManager manager;
-	
-	@Inject
-	@PersistenceContext(unitName="Clinica2")
-	private EntityManager  manager2;
+	private EntityManager manager;	
 
 	public TbAgenda porId(Integer id) {
 		return manager.find(TbAgenda.class, id);
@@ -46,7 +38,6 @@ public class AgendaBLL implements Serializable {
 	public TbAgenda guardar(TbAgenda item) {
 		try {
 			item.setTbUsuario(SessionContext.getInstance().getUsuarioLogado());
-			manager2.merge(item);
 			return manager.merge(item);	
 		} catch (PersistenceException e) {
 			if (e.getCause() instanceof ConstraintViolationException) {

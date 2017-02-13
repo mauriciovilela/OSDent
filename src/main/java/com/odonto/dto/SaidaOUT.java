@@ -2,6 +2,7 @@ package com.odonto.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class SaidaOUT implements Serializable {
 
@@ -9,7 +10,11 @@ public class SaidaOUT implements Serializable {
 
 	private Integer id;
 	private String dsDescricao;
+	private String dsFornecedor;
 	private BigDecimal total;
+	private BigDecimal vlTotal;
+	private BigDecimal vlPago;
+	private Date dtInclusao;
 
 	public SaidaOUT() {
 
@@ -21,6 +26,30 @@ public class SaidaOUT implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public String getDsFornecedor() {
+		return dsFornecedor;
+	}
+
+	public void setDsFornecedor(String dsFornecedor) {
+		this.dsFornecedor = dsFornecedor;
+	}
+
+	public BigDecimal getVlTotal() {
+		return vlTotal;
+	}
+
+	public void setVlTotal(BigDecimal vlTotal) {
+		this.vlTotal = vlTotal;
+	}
+
+	public BigDecimal getVlPago() {
+		return vlPago;
+	}
+
+	public void setVlPago(BigDecimal vlPago) {
+		this.vlPago = vlPago;
 	}
 
 	public String getDsDescricao() {
@@ -62,6 +91,14 @@ public class SaidaOUT implements Serializable {
 
 	public void setTotal(BigDecimal total) {
 		this.total = total;
+	}
+
+	public Date getDtInclusao() {
+		return dtInclusao;
+	}
+
+	public void setDtInclusao(Date dtInclusao) {
+		this.dtInclusao = dtInclusao;
 	}
 
 }

@@ -57,6 +57,11 @@ public class TbSaida implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="ID_SOCIO_INSS")
 	private TbUsuario tbSocioInss;
+
+	@NotNull
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="DT_INLUSAO")
+	private Date dtInclusao;
 	
 	public TbSaida() {
 	}
@@ -131,6 +136,14 @@ public class TbSaida implements Serializable {
 
 	public void setTbSocioInss(TbUsuario tbSocioInss) {
 		this.tbSocioInss = tbSocioInss;
+	}
+
+	public Date getDtInclusao() {
+		return dtInclusao;
+	}
+
+	public void setDtInclusao(Date dtInclusao) {
+		this.dtInclusao = dtInclusao;
 	}
 
 	@Override

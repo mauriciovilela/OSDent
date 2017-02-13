@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 
 import com.odonto.BLL.PacienteBLL;
-import com.odonto.jobs.JobAgenda;
 import com.odonto.model.TbPaciente;
 import com.odonto.util.jpa.Transactional;
 
@@ -18,7 +17,7 @@ public class PacienteService implements Serializable {
 	@Inject
 	private PacienteBLL usuarios;
 
-	private static Logger logger = Logger.getLogger(JobAgenda.class);
+	private static Logger logger = Logger.getLogger(PacienteService.class);
 
 	@Transactional
 	public TbPaciente salvar(TbPaciente item) {	

@@ -108,5 +108,16 @@
 	    <filter-name>CORS</filter-name>
 	    <url-pattern>/*</url-pattern>
 	</filter-mapping>
+	
+	<servlet>
+		<servlet-name>ServletBI</servlet-name>
+		<servlet-class>com.odonto.servlet.ServletBI</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ServletBI</servlet-name>
+		<url-pattern>/ServletBI</url-pattern>
+	</servlet-mapping>	
 
 </web-app>
