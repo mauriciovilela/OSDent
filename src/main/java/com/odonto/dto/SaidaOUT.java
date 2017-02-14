@@ -11,10 +11,13 @@ public class SaidaOUT implements Serializable {
 	private Integer id;
 	private String dsDescricao;
 	private String dsFornecedor;
+	private String dsSocioInss;
+	private String dsFluxoCaixa;
 	private BigDecimal total;
-	private BigDecimal vlTotal;
-	private BigDecimal vlPago;
+	private String vlTotal;
+	private String vlPago;
 	private Date dtInclusao;
+	private String dtData;
 
 	public SaidaOUT() {
 
@@ -36,19 +39,19 @@ public class SaidaOUT implements Serializable {
 		this.dsFornecedor = dsFornecedor;
 	}
 
-	public BigDecimal getVlTotal() {
+	public String getVlTotal() {
 		return vlTotal;
 	}
 
-	public void setVlTotal(BigDecimal vlTotal) {
+	public void setVlTotal(String vlTotal) {
 		this.vlTotal = vlTotal;
 	}
 
-	public BigDecimal getVlPago() {
+	public String getVlPago() {
 		return vlPago;
 	}
 
-	public void setVlPago(BigDecimal vlPago) {
+	public void setVlPago(String vlPago) {
 		this.vlPago = vlPago;
 	}
 
@@ -58,6 +61,22 @@ public class SaidaOUT implements Serializable {
 
 	public void setDsDescricao(String dsDescricao) {
 		this.dsDescricao = dsDescricao;
+	}
+
+	public String getDsSocioInss() {
+		return dsSocioInss;
+	}
+
+	public void setDsSocioInss(String dsSocioInss) {
+		this.dsSocioInss = dsSocioInss;
+	}
+
+	public String getDsFluxoCaixa() {
+		return dsFluxoCaixa;
+	}
+
+	public void setDsFluxoCaixa(String dsFluxoCaixa) {
+		this.dsFluxoCaixa = dsFluxoCaixa;
 	}
 
 	@Override
@@ -99,6 +118,14 @@ public class SaidaOUT implements Serializable {
 
 	public void setDtInclusao(Date dtInclusao) {
 		this.dtInclusao = dtInclusao;
+	}
+
+	public String getDtData() {
+		return dtData;
+	}
+
+	public void setDtData(String dtData) {
+		this.dtData = dtData;
 	}
 
 }

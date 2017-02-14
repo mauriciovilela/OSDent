@@ -16,9 +16,9 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name="tb_pagamento")
+@Table(name = "tb_pagamento")
 public class TbPagamento implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -26,59 +26,64 @@ public class TbPagamento implements Serializable {
 	private Integer id;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="DT_ENTRADA")
+	@Column(name = "DT_ENTRADA")
 	@NotNull
 	private Date dtEntrada;
 
-	@Column(name="QT_PARCELAS")
+	@Column(name = "QT_PARCELAS")
 	private int qtParcelas;
 
-	@Column(name="VL_PARCELA")
+	@Column(name = "VL_PARCELA")
 	private BigDecimal vlParcela;
 
-	@Column(name="VL_TOTAL")
+	@Column(name = "VL_TOTAL")
 	@NotNull
 	private BigDecimal vlTotal;
 
-	@Column(name="VL_PAGO")
+	@Column(name = "VL_PAGO")
 	@NotNull
 	private BigDecimal vlPago;
 
 	@ManyToOne
-	@JoinColumn(name="ID_TIPO_PGTO")
+	@JoinColumn(name = "ID_TIPO_PGTO")
 	@NotNull
 	private TbTipoPgto tbTipoPgto;
 
 	@ManyToOne
-	@JoinColumn(name="ID_PACIENTE")
+	@JoinColumn(name = "ID_PACIENTE")
 	@NotNull
 	private TbPaciente tbPaciente;
-	
+
 	@ManyToOne
-	@JoinColumn(name="ID_RESPONSAVEL")
+	@JoinColumn(name = "ID_RESPONSAVEL")
 	@NotNull
 	private TbUsuario tbResponsavel;
-	
+
 	@ManyToOne
-	@JoinColumn(name="ID_MAQUINA")
+	@JoinColumn(name = "ID_MAQUINA")
 	private TbUsuario tbMaquina;
-	
+
 	@ManyToOne
-	@JoinColumn(name="ID_DENTISTA")
+	@JoinColumn(name = "ID_DENTISTA")
 	private TbUsuario tbDentista;
 
-	@Column(name="DS_OBS", length=150)
+	@Column(name = "DS_OBS", length = 150)
 	private String dsObservacao;
-	
+
 	@ManyToOne
-	@JoinColumn(name="ID_USUARIO")
+	@JoinColumn(name = "ID_USUARIO")
 	private TbUsuario tbUsuario;
-	
+
 	@ManyToOne
-	@JoinColumn(name="ID_STATUS")
+	@JoinColumn(name = "ID_STATUS")
 	@NotNull
 	private TbPagamentoStatus tbPagamentoStatus;
-	
+
+	@NotNull
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DT_INCLUSAO")
+	private Date dtInclusao;
+
 	public TbPagamento() {
 	}
 
@@ -192,6 +197,14 @@ public class TbPagamento implements Serializable {
 
 	public void setTbPagamentoStatus(TbPagamentoStatus tbPagamentoStatus) {
 		this.tbPagamentoStatus = tbPagamentoStatus;
+	}
+
+	public Date getDtInclusao() {
+		return dtInclusao;
+	}
+
+	public void setDtInclusao(Date dtInclusao) {
+		this.dtInclusao = dtInclusao;
 	}
 
 	@Override

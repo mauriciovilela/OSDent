@@ -37,6 +37,7 @@ public class SaidaBLL implements Serializable {
 
 	public TbSaida guardar(TbSaida item) {
 		item.setTbUsuario(SessionContext.getInstance().getUsuarioLogado());
+		item.setDtInclusao(new Date());
 		return manager.merge(item);
 	}
 	

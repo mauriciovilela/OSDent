@@ -69,6 +69,14 @@ public class PagamentoBLL implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
+	public List<TbPagamento> porDataExportacao(Date data) {
+		Session session = manager.unwrap(Session.class);
+		Criteria criteria = session.createCriteria(TbPagamento.class);
+		criteria.add(Restrictions.gt("dtInclusao", data));
+//		criteria.addOrder(Order.asc("id"));
+		return criteria.list();
+	}
+	@SuppressWarnings("unchecked")
 	public List<TbPagamento> inadimplentes() {
 		Session session = manager.unwrap(Session.class);
 		Criteria criteria = session.createCriteria(TbPagamento.class);

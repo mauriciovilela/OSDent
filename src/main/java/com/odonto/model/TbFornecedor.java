@@ -23,7 +23,7 @@ public class TbFornecedor implements Serializable {
 	private Integer id;
 
 	@NotBlank
-	@Column(name="DS_NOME")
+	@Column(name="DS_NOME", length = 100)
 	private String dsNome;
 
 	@Column(name="FL_DENTAL")

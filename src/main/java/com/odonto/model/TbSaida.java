@@ -60,7 +60,7 @@ public class TbSaida implements Serializable {
 
 	@NotNull
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="DT_INLUSAO")
+	@Column(name="DT_INCLUSAO")
 	private Date dtInclusao;
 	
 	public TbSaida() {
