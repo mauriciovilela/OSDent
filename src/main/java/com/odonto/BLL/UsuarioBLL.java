@@ -1,6 +1,7 @@
 package com.odonto.BLL;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,6 +25,7 @@ public class UsuarioBLL implements Serializable {
 	private EntityManager manager;
 
 	public TbUsuario guardar(TbUsuario item) {
+		item.setDtInclusao(new Date());
 		return manager.merge(item);
 	}
 	
@@ -89,5 +91,14 @@ public class UsuarioBLL implements Serializable {
 		}
 		return null;
 	}	
+
+	@SuppressWarnings("unchecked")
+	public List<TbUsuario> porDataExportacao(Date data) {
+		Session session = manager.unwrap(Session.class);
+		Criteria criteria = session.createCriteria(TbUsuario.class);
+		criteria.add(Restrictions.gt("dtInclusao", data));
+//		criteria.addOrder(Order.asc("id"));
+		return criteria.list();
+	}
 	
 }

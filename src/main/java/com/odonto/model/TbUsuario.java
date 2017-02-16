@@ -1,12 +1,15 @@
 package com.odonto.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -43,6 +46,10 @@ public class TbUsuario implements Serializable {
 	@Column(name="FL_ATIVO")
 	private Boolean flAtivo;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DT_INCLUSAO")
+	private Date dtInclusao;
+	
 	public TbUsuario() {
 	}
 
@@ -116,6 +123,14 @@ public class TbUsuario implements Serializable {
 
 	public void setFlAtivo(Boolean flAtivo) {
 		this.flAtivo = flAtivo;
+	}
+
+	public Date getDtInclusao() {
+		return dtInclusao;
+	}
+
+	public void setDtInclusao(Date dtInclusao) {
+		this.dtInclusao = dtInclusao;
 	}
 
 	@Override

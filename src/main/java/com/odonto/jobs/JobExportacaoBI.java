@@ -21,17 +21,16 @@ import com.google.gson.GsonBuilder;
 import com.odonto.BLL.AgendaBLL;
 import com.odonto.BLL.PagamentoBLL;
 import com.odonto.BLL.SaidaBLL;
+import com.odonto.BLL.UsuarioBLL;
 import com.odonto.dto.AgendaOUT;
 import com.odonto.dto.PagamentoOUT;
 import com.odonto.dto.SaidaOUT;
+import com.odonto.dto.UsuarioOUT;
 import com.odonto.model.TbPagamento;
 import com.odonto.model.TbSaida;
+import com.odonto.model.TbUsuario;
+import com.odonto.service.ExportacaoBIService;
 import com.odonto.util.Util;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 @Scheduled(cronExpression = "0/15 * * * * ?")
 public class JobExportacaoBI implements org.quartz.Job {
@@ -43,17 +42,24 @@ public class JobExportacaoBI implements org.quartz.Job {
 	private SaidaBLL saidaBLL;
 
 	@Inject
+	private UsuarioBLL usuarioBLL;
+	
+	@Inject
 	private PagamentoBLL pagamentoBLL;
 
 	@Inject
 	private AgendaBLL agendaBLL;
 
+	@Inject
+	private ExportacaoBIService exportacaoService;
+	
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		try {
 			exportarAgendaBI(1);
 			exportarDespesasBI();
 			exportarPagamentosBI();
+			exportarUsuariosBI();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -103,28 +109,14 @@ public class JobExportacaoBI implements org.quartz.Job {
 
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
 		String postData = gson.toJson(result);
-
-		OkHttpClient client = new OkHttpClient();
-
-		okhttp3.MediaType mediaType = okhttp3.MediaType.parse("application/json");
-		RequestBody body = RequestBody.create(mediaType, postData);
-		Request request = new Request.Builder().url("https://clinica-bi.herokuapp.com/osdent/agenda").post(body)
-				.addHeader("content-type", "application/json").addHeader("cache-control", "no-cache")
-				.addHeader("postman-token", "1d5b46f9-48bc-1e13-bdbf-52e2ffaaa1a1").build();
-
-		Response response = client.newCall(request).execute();
-		System.out.println(response.code());
+		
+		exportacaoService.exportarAgenda(postData);
 	}
 
 	public void exportarDespesasBI() throws IOException {
-		OkHttpClient client = new OkHttpClient();
-
-		Request request = new Request.Builder().url("https://clinica-bi.herokuapp.com/osdent/despesa/ultimaImportacao").get()
-				.addHeader("content-type", "application/json").addHeader("cache-control", "no-cache")
-				.addHeader("postman-token", "1d5b46f9-48bc-1e13-bdbf-52e2ffaaa1a1").build();
-
-		Response response = client.newCall(request).execute();
-		String retorno = response.body().string();
+		
+		String retorno = exportacaoService.getUltimaExportacao("despesa");
+		
 		Date data = (StringUtils.isEmpty(retorno) ? Util.getMinDate() : Util.convertJSONDate(retorno));
 
 		List<TbSaida> lista = saidaBLL.porDataExportacao(data);
@@ -155,29 +147,15 @@ public class JobExportacaoBI implements org.quartz.Job {
 			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
 			String postData = gson.toJson(result);
 
-			client = new OkHttpClient();
-
-			okhttp3.MediaType mediaType = okhttp3.MediaType.parse("application/json");
-			RequestBody body = RequestBody.create(mediaType, postData);
-			request = new Request.Builder().url("https://clinica-bi.herokuapp.com/osdent/despesa").post(body)
-					.addHeader("content-type", "application/json").addHeader("cache-control", "no-cache")
-					.addHeader("postman-token", "1d5b46f9-48bc-1e13-bdbf-52e2ffaaa1a1").build();
-
-			response = client.newCall(request).execute();
-			System.out.println(response.code());
+			exportacaoService.exportarDespesa(postData);
 		}
 
 	}
 	
 	public void exportarPagamentosBI() throws IOException {
-		OkHttpClient client = new OkHttpClient();
-
-		Request request = new Request.Builder().url("https://clinica-bi.herokuapp.com/osdent/pagamento/ultimaImportacao").get()
-				.addHeader("content-type", "application/json").addHeader("cache-control", "no-cache")
-				.addHeader("postman-token", "1d5b46f9-48bc-1e13-bdbf-52e2ffaaa1a1").build();
-
-		Response response = client.newCall(request).execute();
-		String retorno = response.body().string();
+		
+		String retorno = exportacaoService.getUltimaExportacao("pagamento");
+		
 		Date data = (StringUtils.isEmpty(retorno) ? Util.getMinDate() : Util.convertJSONDate(retorno));
 
 		List<TbPagamento> lista = pagamentoBLL.porDataExportacao(data);
@@ -213,17 +191,57 @@ public class JobExportacaoBI implements org.quartz.Job {
 			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
 			String postData = gson.toJson(result);
 
-			client = new OkHttpClient();
-
-			okhttp3.MediaType mediaType = okhttp3.MediaType.parse("application/json");
-			RequestBody body = RequestBody.create(mediaType, postData);
-			request = new Request.Builder().url("https://clinica-bi.herokuapp.com/osdent/pagamento").post(body)
-					.addHeader("content-type", "application/json").addHeader("cache-control", "no-cache")
-					.addHeader("postman-token", "1d5b46f9-48bc-1e13-bdbf-52e2ffaaa1a1").build();
-
-			response = client.newCall(request).execute();
-			System.out.println(response.code());
+			exportacaoService.exportarPagamento(postData);
 		}
 		
+	}
+
+	public void exportarUsuariosBI() throws IOException {
+		
+		String retorno = exportacaoService.getUltimaExportacao("usuario");
+		
+		Date data = (StringUtils.isEmpty(retorno) ? Util.getMinDate() : Util.convertJSONDate(retorno));
+
+		List<TbUsuario> lista = usuarioBLL.porDataExportacao(data);
+
+		if (lista.size() > 0) {
+
+			UsuarioOUT itemExport = null;
+			List<UsuarioOUT> result = new ArrayList<UsuarioOUT>();
+
+			for (TbUsuario item : lista) {
+				itemExport = new UsuarioOUT();
+				itemExport.setId(item.getId());
+				itemExport.setDsNome(item.getDsNome());
+				itemExport.setDsSenha(item.getDsSenha());
+				itemExport.setDsEmail(item.getDsEmail());
+				itemExport.setDsUsuario(item.getDsUsuario());
+				itemExport.setDsPerfil(item.getDsPerfil());
+				itemExport.setDsTipo(getTipoUsuario(item));
+				itemExport.setDtInclusao(item.getDtInclusao());
+				result.add(itemExport);
+			}
+
+			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+			String postData = gson.toJson(result);
+
+			exportacaoService.exportarUsuario(postData);
+		}
+
+	}
+	
+	private String getTipoUsuario(TbUsuario item) {
+		if (item.getFlSocio()) {
+			return "Socio";
+		}
+		if (item.getFlDentista()) {
+			return "Dentista";
+		} 
+		if (item.getFlDentista()) {
+			return "Secretari";
+		}
+		else {
+			return "";
+		}
 	}
 }

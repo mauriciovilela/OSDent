@@ -33,6 +33,7 @@ public class PagamentoBLL implements Serializable {
 
 	public TbPagamento guardar(TbPagamento item) {
 		item.setTbUsuario(SessionContext.getInstance().getUsuarioLogado());
+		item.setDtEntrada(new Date());
 		return manager.merge(item);			
 	}
 
@@ -76,6 +77,7 @@ public class PagamentoBLL implements Serializable {
 //		criteria.addOrder(Order.asc("id"));
 		return criteria.list();
 	}
+	
 	@SuppressWarnings("unchecked")
 	public List<TbPagamento> inadimplentes() {
 		Session session = manager.unwrap(Session.class);

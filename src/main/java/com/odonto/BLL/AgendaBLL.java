@@ -47,6 +47,10 @@ public class AgendaBLL implements Serializable {
 		}		
 	}
 	
+	public List<AgendaOUT> listarPorData(Date dataInicial, Date dataFinal) {
+		return listarPorDentista(null, dataInicial, dataFinal, false);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<AgendaOUT> listarPorDentista(Integer idDentista, Date dataInicial, Date dataFinal, boolean horaExata) {
 		Session session = manager.unwrap(Session.class);
@@ -55,7 +59,8 @@ public class AgendaBLL implements Serializable {
 		criteria.createAlias("tbAgendaStatus", "AS");
 		criteria.createAlias("tbPaciente", "P");
 		criteria.createAlias("tbProcedimento", "PR");
-		criteria.add(Restrictions.eq("D.id", idDentista));
+		if (idDentista != null)
+			criteria.add(Restrictions.eq("D.id", idDentista));
 		criteria.add(
 			Restrictions.not(
 				Restrictions.in("AS.id", new Integer[] {
