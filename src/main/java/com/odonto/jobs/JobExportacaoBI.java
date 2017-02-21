@@ -19,13 +19,16 @@ import org.quartz.JobExecutionException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.odonto.BLL.AgendaBLL;
+import com.odonto.BLL.FechamentoCaixaBLL;
 import com.odonto.BLL.PagamentoBLL;
 import com.odonto.BLL.SaidaBLL;
 import com.odonto.BLL.UsuarioBLL;
 import com.odonto.dto.AgendaOUT;
+import com.odonto.dto.FechamentoOUT;
 import com.odonto.dto.PagamentoOUT;
 import com.odonto.dto.SaidaOUT;
 import com.odonto.dto.UsuarioOUT;
+import com.odonto.model.TbFechamentoCaixa;
 import com.odonto.model.TbPagamento;
 import com.odonto.model.TbSaida;
 import com.odonto.model.TbUsuario;
@@ -51,6 +54,9 @@ public class JobExportacaoBI implements org.quartz.Job {
 	private AgendaBLL agendaBLL;
 
 	@Inject
+	private FechamentoCaixaBLL fechamentoBLL;
+	
+	@Inject
 	private ExportacaoBIService exportacaoService;
 	
 	@Override
@@ -60,6 +66,7 @@ public class JobExportacaoBI implements org.quartz.Job {
 			exportarDespesasBI();
 			exportarPagamentosBI();
 			exportarUsuariosBI();
+			exportarFechamentoCaixaBI();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -126,7 +133,7 @@ public class JobExportacaoBI implements org.quartz.Job {
 			SaidaOUT itemExport = null;
 			List<SaidaOUT> result = new ArrayList<SaidaOUT>();
 
-			DecimalFormat dfMoeda = new DecimalFormat("R$ 0.##");
+			DecimalFormat dfMoeda = new DecimalFormat("R$ #,##0.00");
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
 			for (TbSaida item : lista) {
@@ -165,7 +172,7 @@ public class JobExportacaoBI implements org.quartz.Job {
 			PagamentoOUT itemExport = null;
 			List<PagamentoOUT> result = new ArrayList<PagamentoOUT>();
 
-			DecimalFormat dfMoeda = new DecimalFormat("R$ 0.##");
+			DecimalFormat dfMoeda = new DecimalFormat("R$ #,##0.00");
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
 			for (TbPagamento item : lista) {
@@ -208,7 +215,9 @@ public class JobExportacaoBI implements org.quartz.Job {
 
 			UsuarioOUT itemExport = null;
 			List<UsuarioOUT> result = new ArrayList<UsuarioOUT>();
-
+			
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			
 			for (TbUsuario item : lista) {
 				itemExport = new UsuarioOUT();
 				itemExport.setId(item.getId());
@@ -217,8 +226,9 @@ public class JobExportacaoBI implements org.quartz.Job {
 				itemExport.setDsEmail(item.getDsEmail());
 				itemExport.setDsUsuario(item.getDsUsuario());
 				itemExport.setDsPerfil(item.getDsPerfil());
-				itemExport.setDsTipo(getTipoUsuario(item));
+//				itemExport.setDsTipo(getTipoUsuario(item));
 				itemExport.setDtInclusao(item.getDtInclusao());
+				itemExport.setDtData(df.format(item.getDtInclusao()));
 				result.add(itemExport);
 			}
 
@@ -228,20 +238,45 @@ public class JobExportacaoBI implements org.quartz.Job {
 			exportacaoService.exportarUsuario(postData);
 		}
 
-	}
-	
-	private String getTipoUsuario(TbUsuario item) {
-		if (item.getFlSocio()) {
-			return "Socio";
+	}	
+
+	public void exportarFechamentoCaixaBI() throws IOException {
+		
+		String retorno = exportacaoService.getUltimaExportacao("fechamento");
+		
+		Date data = (StringUtils.isEmpty(retorno) ? Util.getMinDate() : Util.convertJSONDate(retorno));
+
+		List<TbFechamentoCaixa> lista = fechamentoBLL.porDataExportacao(data);
+
+		if (lista.size() > 0) {
+
+			FechamentoOUT itemExport = null;
+			List<FechamentoOUT> result = new ArrayList<FechamentoOUT>();
+			
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			DecimalFormat dfMoeda = new DecimalFormat("R$ #,##0.00");
+			
+			for (TbFechamentoCaixa item : lista) {
+				itemExport = new FechamentoOUT();
+				itemExport.setId(item.getId());
+				itemExport.setDsDescricao(item.getDsDescricao());
+				itemExport.setDsResponsavel(item.getTbResponsavel().getDsNome());
+				itemExport.setVlCheque(dfMoeda.format(item.getVlCheque()));
+				itemExport.setVlCredito(dfMoeda.format(item.getVlCredito()));
+				itemExport.setVlDebito(dfMoeda.format(item.getVlDebito()));
+				itemExport.setVlDespesa(dfMoeda.format(item.getVlDespesa()));
+				itemExport.setVlDinheiro(dfMoeda.format(item.getVlDinheiro()));
+				itemExport.setVlMovimentado(dfMoeda.format(item.getVlMovimentado()));
+				itemExport.setDtInclusao(item.getDtInclusao());
+				itemExport.setDtData(df.format(item.getDtInclusao()));
+				result.add(itemExport);
+			}
+
+			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+			String postData = gson.toJson(result);
+
+			exportacaoService.exportarFechamento(postData);
 		}
-		if (item.getFlDentista()) {
-			return "Dentista";
-		} 
-		if (item.getFlDentista()) {
-			return "Secretari";
-		}
-		else {
-			return "";
-		}
+
 	}
 }

@@ -9,6 +9,7 @@ public class UsuarioOUT implements Serializable {
 
 	private Integer id;
 	private String dsNome;
+	private String dtData;
 	private String dsEmail;
 	private String dsUsuario;
 	private Boolean flSocio;
@@ -134,6 +135,14 @@ public class UsuarioOUT implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public String getDtData() {
+		return dtData;
+	}
+
+	public void setDtData(String dtData) {
+		this.dtData = dtData;
 	}
 
 }

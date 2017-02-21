@@ -85,5 +85,13 @@ public class FechamentoCaixaBLL implements Serializable {
 		}
 		return list.get(0);
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public List<TbFechamentoCaixa> porDataExportacao(Date data) {
+		Session session = manager.unwrap(Session.class);
+		Criteria criteria = session.createCriteria(TbFechamentoCaixa.class);
+		criteria.add(Restrictions.gt("dtInclusao", data));
+//		criteria.addOrder(Order.asc("id"));
+		return criteria.list();
+	}
 }

@@ -72,6 +72,16 @@ public class ExportacaoBIService implements Serializable {
 		}
 	}
 
+	public void exportarFechamento(String postData) {
+		String urlRest = String.format("%s/fechamento", URL_API);
+		Response response = executeRequestPOST(urlRest, postData);
+		if (response.code() == 200) {
+			logger.info(String.format("[200][OK] Sucesso: %s", urlRest));
+		} else {
+			logger.error(String.format("Não foi possível executar: %s", urlRest));
+		}
+	}
+
 	private Response executeRequestPOST(String urlRest, String postData) {
 		OkHttpClient client = new OkHttpClient();
 		okhttp3.MediaType mediaType = okhttp3.MediaType.parse("application/json");
