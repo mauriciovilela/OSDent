@@ -1,11 +1,14 @@
 package com.odonto.controller;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -13,6 +16,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.swing.text.MaskFormatter;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
@@ -57,6 +61,7 @@ public class AgendaBean implements Serializable {
 
 	@Inject
 	private AgendaStatusBLL agendaStatusBLL;
+	
 
 	@Inject
 	private AgendaService agendaService;
@@ -95,6 +100,8 @@ public class AgendaBean implements Serializable {
 	private String nomeDentista;
 	private String dataDentista;
 	
+	Map<Integer, String> mapPatternFone = new HashMap<Integer, String>(); 
+	
 	public AgendaBean() {
 		eventModel = new LazyScheduleModel() {
 			private static final long serialVersionUID = 1L;
@@ -124,6 +131,7 @@ public class AgendaBean implements Serializable {
 			}
 		}
 		RequestContext.getCurrentInstance().execute("PF('ajaxLoading').hide();");
+		setPatternFone();
 	}
 
 	public void pesquisarPorDentista() {
@@ -246,10 +254,6 @@ public class AgendaBean implements Serializable {
 		}
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.addMessage(null, new FacesMessage(mensagem));
-//		context.addMessage(null,
-//				new FacesMessage(mensagem,
-//						paciente.getDsNome() + "<br /> Data: " + Util.getData(agenda.getDtInicio()) + "<br />Hora: "
-//								+ Util.getHora(agenda.getDtInicio()) + " - " + Util.getHora(agenda.getDtFim())));
 	}
 
 	/**
@@ -438,7 +442,41 @@ public class AgendaBean implements Serializable {
 	public void selecionaDentista() {
 		//do nothing
 	}
-
+	
+	public void capturaTelefone() {
+		
+	}
+	
+	public String formata(String valor) {
+		if (valor == null) {
+			return valor;
+		}
+		if (!StringUtils.isNumeric(valor)) {
+			return valor;
+		}
+		String pattern = mapPatternFone.get(valor.trim().length());
+		if (pattern == null) {
+			return valor;
+		}
+        MaskFormatter mf;
+        try {
+            mf = new MaskFormatter(pattern);
+            mf.setValueContainsLiteralCharacters(false);
+            return mf.valueToString(valor);
+        } catch (ParseException ex) {
+            ex.getStackTrace();
+        }
+        return null;
+    }
+	
+	private void setPatternFone() {
+		mapPatternFone.put(8, "####-####");
+		mapPatternFone.put(9, "#-####-####");
+		mapPatternFone.put(10, "(##) ####-####");
+		mapPatternFone.put(11, "(##) #-####-####");
+		mapPatternFone.put(14, "(##) #-####-####");
+	}
+	
 	// getters and setters
 
 	public TbAgenda getAgenda() {

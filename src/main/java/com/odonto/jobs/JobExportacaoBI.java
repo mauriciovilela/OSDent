@@ -35,7 +35,7 @@ import com.odonto.model.TbUsuario;
 import com.odonto.service.ExportacaoBIService;
 import com.odonto.util.Util;
 
-@Scheduled(cronExpression = "0/15 * * * * ?")
+@Scheduled(cronExpression = "0 0/30 * * * ?")
 public class JobExportacaoBI implements org.quartz.Job {
 
 	// 0 0 19 * * ? = as 19 horas
@@ -62,7 +62,7 @@ public class JobExportacaoBI implements org.quartz.Job {
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		try {
-			exportarAgendaBI(1);
+			exportarAgendaBI(2);
 			exportarDespesasBI();
 			exportarPagamentosBI();
 			exportarUsuariosBI();
@@ -226,7 +226,6 @@ public class JobExportacaoBI implements org.quartz.Job {
 				itemExport.setDsEmail(item.getDsEmail());
 				itemExport.setDsUsuario(item.getDsUsuario());
 				itemExport.setDsPerfil(item.getDsPerfil());
-//				itemExport.setDsTipo(getTipoUsuario(item));
 				itemExport.setDtInclusao(item.getDtInclusao());
 				itemExport.setDtData(df.format(item.getDtInclusao()));
 				result.add(itemExport);
@@ -268,7 +267,7 @@ public class JobExportacaoBI implements org.quartz.Job {
 				itemExport.setVlDinheiro(dfMoeda.format(item.getVlDinheiro()));
 				itemExport.setVlMovimentado(dfMoeda.format(item.getVlMovimentado()));
 				itemExport.setDtInclusao(item.getDtInclusao());
-				itemExport.setDtData(df.format(item.getDtInclusao()));
+				itemExport.setDtData(df.format(item.getDtFechamento()));
 				result.add(itemExport);
 			}
 

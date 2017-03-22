@@ -10,6 +10,7 @@ import javax.persistence.PersistenceException;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToBeanResultTransformer;
@@ -91,7 +92,7 @@ public class FechamentoCaixaBLL implements Serializable {
 		Session session = manager.unwrap(Session.class);
 		Criteria criteria = session.createCriteria(TbFechamentoCaixa.class);
 		criteria.add(Restrictions.gt("dtInclusao", data));
-//		criteria.addOrder(Order.asc("id"));
+		criteria.addOrder(Order.desc("id"));
 		return criteria.list();
 	}
 }

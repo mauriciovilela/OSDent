@@ -1,6 +1,7 @@
 package com.odonto.service;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -16,7 +17,8 @@ public class UsuarioService implements Serializable {
 	private UsuarioBLL usuarios;
 	
 	@Transactional
-	public TbUsuario salvar(TbUsuario item) {	
+	public TbUsuario salvar(TbUsuario item) {
+		item.setDtInclusao(new Date());
 		return usuarios.guardar(item);
 	}
 	

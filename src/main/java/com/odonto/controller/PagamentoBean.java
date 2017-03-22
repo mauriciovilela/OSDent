@@ -17,6 +17,7 @@ import org.primefaces.context.RequestContext;
 import com.odonto.BLL.AgendaBLL;
 import com.odonto.BLL.FechamentoCaixaBLL;
 import com.odonto.BLL.PagamentoBLL;
+import com.odonto.BLL.ProcedimentoBLL;
 import com.odonto.BLL.UsuarioBLL;
 import com.odonto.constants.Constants;
 import com.odonto.dto.AgendaOUT;
@@ -49,6 +50,9 @@ public class PagamentoBean implements Serializable {
 
 	@Inject
 	private UsuarioBLL usuarioBLL;
+
+	@Inject
+	private ProcedimentoBLL procedimentoBLL;
 	
 	private TbPagamento pagamento;
 	private TbAgenda agenda;
@@ -59,6 +63,7 @@ public class PagamentoBean implements Serializable {
 
 	@NotNull
 	private Integer idDentista;
+	private Integer idProcedimento;
 
 	private boolean tipoPgtoMaquina;
 	private boolean tipoCredito;
@@ -75,6 +80,7 @@ public class PagamentoBean implements Serializable {
 		if (FacesUtil.isNotPostback()) {
 			if (agenda != null) {
 				pagamento.setTbPaciente(agenda.getTbPaciente());
+				idProcedimento = agenda.getTbProcedimento().getId();
 				idDentista = agenda.getTbDentista().getId();
 			}
 			idResponsavel = SessionContext.getInstance().getUsuarioLogado().getId();
@@ -164,6 +170,7 @@ public class PagamentoBean implements Serializable {
 		if (!this.pagamento.getVlTotal().equals(this.pagamento.getVlPago())) {
 			pagamento.getTbPagamentoStatus().setId(Constants.TbStatusPgto.pendente);
 		}
+		pagamento.setTbProcedimento(procedimentoBLL.porId(idProcedimento));
 		pagamento.setTbResponsavel(usuarioBLL.porId(idResponsavel));
 		pagamento.setTbDentista(usuarioBLL.porId(idDentista));
 		pagamento = pagamentoService.salvar(this.pagamento);
@@ -260,6 +267,14 @@ public class PagamentoBean implements Serializable {
 
 	public void setIdMaquina(Integer idMaquina) {
 		this.idMaquina = idMaquina;
+	}
+
+	public Integer getIdProcedimento() {
+		return idProcedimento;
+	}
+
+	public void setIdProcedimento(Integer idProcedimento) {
+		this.idProcedimento = idProcedimento;
 	}
 
 }

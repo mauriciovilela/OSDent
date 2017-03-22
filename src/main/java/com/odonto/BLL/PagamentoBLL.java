@@ -18,6 +18,7 @@ import com.odonto.constants.Constants;
 import com.odonto.model.TbPagamento;
 import com.odonto.security.SessionContext;
 import com.odonto.service.NegocioException;
+import com.odonto.util.Util;
 import com.odonto.util.jpa.Transactional;
 
 public class PagamentoBLL implements Serializable {
@@ -64,7 +65,7 @@ public class PagamentoBLL implements Serializable {
 	public List<TbPagamento> porData(Date data) {
 		Session session = manager.unwrap(Session.class);
 		Criteria criteria = session.createCriteria(TbPagamento.class);
-		criteria.add(Restrictions.between("dtEntrada", data, data));
+		criteria.add(Restrictions.between("dtEntrada", Util.getDataHora(data, true), Util.getDataHora(data, false)));		
 		criteria.addOrder(Order.asc("id"));
 		return criteria.list();
 	}

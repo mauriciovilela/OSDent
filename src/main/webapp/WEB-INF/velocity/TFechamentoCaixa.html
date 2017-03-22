@@ -5,9 +5,27 @@
 			body { font-size: 13px; }
 			.verde  { color: green; font-weight: bold;font-size: 12px; }
 			.vermelho { color: red; font-weight: bold;font-size: 12px; }
+			.destaque { color: darkred; font-weight: bold;font-size: 12px; }
 			.espacoTopo { padding-top: 10px; }
 			.divEsquerda { width: 54%; }
 			.divDireita { width: 44%; }
+
+			table { 
+			    border-spacing: 0;
+			    border-collapse: collapse;
+			}
+			
+			table tr th {
+				background: #eaeaea;
+				font-size: 14px;
+				font-weight: bold;
+				text-align: left;
+				padding: 3px;
+			}
+			
+			.linha {
+				border-bottom: 1px solid #eaeaea;
+			}
 		</style>
 	</head>
 	<body>
@@ -34,6 +52,13 @@
 							<td>$pag.dentista</td>
 							<td>$pag.total</td>
 						</tr>
+						<tr>
+							<td colspan="3" class="linha">
+							#if ($pag.obs != "")
+						      <div class="destaque">Obs: $pag.obs</div>
+						    #end								
+							</td>
+						</tr>						
 						#end
 					</table>
 					<div class="espacoTopo vermelho">Total Cartões $vlBrutoCartoes</div>
@@ -43,50 +68,58 @@
 					#end
 				</td>
 				<td class="divDireita" valign="top">
-					<h4>DESPESAS <span class="vermelho">( $vlDespesas )</span></h4>
-					<table style="width: 100%">
-						<tr>
-							<th>Despesa</th>
-							<th>Obs.</th>
-							<th style="width: 75px;">Total</th>
-						</tr>
-						#foreach( $saida in $saidasComFluxo )
-							<tr>
-								<td style="padding-right: 7px;">$saida.despesa</td>
-								<td>$saida.obs</td>
-								<td>$saida.total</td>
-							</tr>
-						#end
-					</table>
-<!-- 					<div class="espacoTopo vermelho">Total Despesas $vlDespesas</div> -->
-					
-					#if ($saidasSemFluxo.size() > 0)
-						<h4>DESPESAS FORA FLUXO <span class="vermelho"> ( $vlDespesasSemFluxo )</span></h4>
+					<div style="margin-left: 10px;">
+						<h4>DESPESAS <span class="vermelho">( $vlDespesas )</span></h4>
 						<table style="width: 100%">
 							<tr>
 								<th>Despesa</th>
-								<th>Obs.</th>
 								<th style="width: 75px;">Total</th>
+								<th style="width: 95px;">Valor (%)</th>
 							</tr>
-							#foreach( $saida in $saidasSemFluxo )
-							<tr>
-								<td style="padding-right: 7px;">$saida.despesa</td>
-								<td>$saida.obs</td>
-								<td>$saida.total</td>
-							</tr>
+							#foreach( $saida in $saidasComFluxo )
+								<tr>
+									<td style="padding-right: 7px;">$saida.despesa</td>
+									<td>$saida.total</td>
+									<td>$saida.valorPct</td>
+								</tr>
+								<tr>
+									<td colspan="3" class="linha">
+									#if ($saida.obs != "")
+								      <div class="destaque">Obs: $saida.obs</div>
+								    #end								
+									</td>
+								</tr>
 							#end
 						</table>
-					#end
-					
-					<div class="espacoTopo vermelho">Total Despesas $vlTotalDespesas</div>
-<!-- 					<div class="espacoTopo vermelho">Total Despesas Fora Fluxo $vlDespesas</div> -->
+						
+						#if ($saidasSemFluxo.size() > 0)
+							<h4>DESPESAS FORA FLUXO <span class="vermelho"> ( $vlDespesasSemFluxo )</span></h4>
+							<table style="width: 100%">
+								<tr>
+									<th>Despesa</th>
+									<th style="width: 75px;">Total</th>
+								</tr>
+								#foreach( $saida in $saidasSemFluxo )
+								<tr>
+									<td style="padding-right: 7px;">$saida.despesa</td>
+									<td>$saida.total</td>
+								</tr>
+								<tr>
+									<td colspan="3" class="linha">
+									#if ($saida.obs != "")
+								      <div class="destaque">Obs: $saida.obs</div>
+								    #end								
+									</td>
+								</tr>								
+								#end
+							</table>
+						#end
+						
+						<div class="espacoTopo vermelho">Total Despesas $vlTotalDespesas</div>
+					</div>
 				</td>
 			</tr>
 		</table>
 
-<!-- 		<br /><br /> -->
-<!-- 		<i>Fechado por</i> $responsavel -->
-<!-- 		<br /> -->
-	
 	</body>
 </html>

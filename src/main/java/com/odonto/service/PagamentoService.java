@@ -1,6 +1,7 @@
 package com.odonto.service;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -19,7 +20,8 @@ public class PagamentoService implements Serializable {
 //	private PagamentoParcelaBLL bllParcela;
 	
 	@Transactional
-	public TbPagamento salvar(TbPagamento item) {	
+	public TbPagamento salvar(TbPagamento item) {
+		item.setDtInclusao(new Date());
 		TbPagamento pagamento = bll.guardar(item);
 //		if (item.getQtParcelas() > 0) {
 //			for (int nrParcela = 1; nrParcela <= item.getQtParcelas(); nrParcela++) {

@@ -84,6 +84,10 @@ public class TbPagamento implements Serializable {
 	@Column(name = "DT_INCLUSAO")
 	private Date dtInclusao;
 
+	@ManyToOne
+	@JoinColumn(name="ID_PROCEDIMENTO")
+	private TbProcedimento tbProcedimento;
+	
 	public TbPagamento() {
 	}
 
@@ -205,6 +209,14 @@ public class TbPagamento implements Serializable {
 
 	public void setDtInclusao(Date dtInclusao) {
 		this.dtInclusao = dtInclusao;
+	}
+
+	public TbProcedimento getTbProcedimento() {
+		return tbProcedimento;
+	}
+
+	public void setTbProcedimento(TbProcedimento tbProcedimento) {
+		this.tbProcedimento = tbProcedimento;
 	}
 
 	@Override

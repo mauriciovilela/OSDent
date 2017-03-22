@@ -68,6 +68,8 @@ public class PacienteBean implements Serializable {
 		if (StringUtils.isNotEmpty(aniversario)) {
 			this.paciente.setDtNascimento(montaDadosAniversario());
 		}
+		String telefone = this.paciente.getDsFone().replaceAll("[^0-9+]", "");
+		this.paciente.setDsFone(telefone);
 		this.paciente.setFlPanfleto(panfleto);
 		this.paciente.setFlPasta((promocao != null && promocao.equals("P")));
 		if (this.paciente.getFlPasta()) {

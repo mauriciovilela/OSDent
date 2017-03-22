@@ -95,7 +95,16 @@
 							completeMethod="#{pacienteBean.pacientesPorNome}"
 							minQueryLength="2" cache="true" var="item"
 							itemLabel="#{item.dsNome}" itemValue="#{item}"
-							converter="pacienteConverterAC" forceSelection="true" />
+							converter="pacienteConverterAC" forceSelection="true" >
+							<p:ajax event="itemSelect" listener="#{agendaBean.capturaTelefone}" 
+								process="@this" update=":frmAgenda:outDialogAgenda" />												
+						</p:autoComplete>	
+							
+						<p:outputLabel for="dsFone" value="Telefone" 
+							rendered="#{ (agendaBean.paciente.dsFone ne null) }" />							
+						<h:outputText id="dsFone" value="#{agendaBean.formata(agendaBean.paciente.dsFone)}"
+							style="font-size: 14px;font-weight:bold"
+							 rendered="#{ (agendaBean.paciente.dsFone ne null)}" />
 
 						<p:outputLabel for="btnHistorico" value="Histórico"></p:outputLabel>
 						<p:outputPanel id="btnHistorico">

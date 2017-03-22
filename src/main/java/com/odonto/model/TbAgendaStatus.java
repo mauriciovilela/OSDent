@@ -38,6 +38,14 @@ public class TbAgendaStatus implements Serializable {
 		this.dsNome = dsNome;
 	}
 
+	public String getDsCor() {
+		return dsCor;
+	}
+
+	public void setDsCor(String dsCor) {
+		this.dsCor = dsCor;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

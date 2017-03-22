@@ -1,6 +1,7 @@
 package com.odonto.service;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -17,6 +18,7 @@ public class SaidaService implements Serializable {
 	
 	@Transactional
 	public TbSaida salvar(TbSaida item) {	
+		item.setDtInclusao(new Date());
 		return bll.guardar(item);
 	}
 	

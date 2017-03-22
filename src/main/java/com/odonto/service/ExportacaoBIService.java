@@ -16,14 +16,14 @@ public class ExportacaoBIService implements Serializable {
 
 	private static Logger logger = Logger.getLogger(ExportacaoBIService.class);
 
-//	public static final String URL_API = "https://clinica-bi.herokuapp.com/osdent";
-	public static final String URL_API = "http://localhost:8081/osdent";
+	public static final String URL_API = "https://clinica-bi.herokuapp.com/osdent";
+//	public static final String URL_API = "http://localhost:8081/osdent";
 
 	public String getUltimaExportacao(String rota) throws IOException {
 		String urlRest = String.format("%s/%s/ultimaImportacao", URL_API, rota);
 		Response response = executeRequestGET(urlRest);
 		if (response.code() == 200) {
-			logger.info(String.format("[200][OK] Sucesso: %s", urlRest));
+//			logger.info(String.format("[200][OK] Sucesso: %s", urlRest));
 			return response.body().string();
 		}
 		else {
@@ -36,7 +36,7 @@ public class ExportacaoBIService implements Serializable {
 		String urlRest = String.format("%s/agenda", URL_API);
 		Response response = executeRequestPOST(urlRest, postData);
 		if (response.code() == 200) {
-			logger.info(String.format("[200][OK] Sucesso: %s", urlRest));
+//			logger.info(String.format("[200][OK] Sucesso: %s", urlRest));
 		} else {
 			logger.error(String.format("Não foi possível executar: %s", urlRest));
 		}
@@ -46,7 +46,7 @@ public class ExportacaoBIService implements Serializable {
 		String urlRest = String.format("%s/despesa", URL_API);
 		Response response = executeRequestPOST(urlRest, postData);
 		if (response.code() == 200) {
-			logger.info(String.format("[200][OK] Sucesso: %s", urlRest));
+//			logger.info(String.format("[200][OK] Sucesso: %s", urlRest));
 		} else {
 			logger.error(String.format("Não foi possível executar: %s", urlRest));
 		}
@@ -56,7 +56,7 @@ public class ExportacaoBIService implements Serializable {
 		String urlRest = String.format("%s/pagamento", URL_API);
 		Response response = executeRequestPOST(urlRest, postData);
 		if (response.code() == 200) {
-			logger.info(String.format("[200][OK] Sucesso: %s", urlRest));
+//			logger.info(String.format("[200][OK] Sucesso: %s", urlRest));
 		} else {
 			logger.error(String.format("Não foi possível executar: %s", urlRest));
 		}
@@ -66,7 +66,7 @@ public class ExportacaoBIService implements Serializable {
 		String urlRest = String.format("%s/usuario", URL_API);
 		Response response = executeRequestPOST(urlRest, postData);
 		if (response.code() == 200) {
-			logger.info(String.format("[200][OK] Sucesso: %s", urlRest));
+//			logger.info(String.format("[200][OK] Sucesso: %s", urlRest));
 		} else {
 			logger.error(String.format("Não foi possível executar: %s", urlRest));
 		}
@@ -76,7 +76,7 @@ public class ExportacaoBIService implements Serializable {
 		String urlRest = String.format("%s/fechamento", URL_API);
 		Response response = executeRequestPOST(urlRest, postData);
 		if (response.code() == 200) {
-			logger.info(String.format("[200][OK] Sucesso: %s", urlRest));
+//			logger.info(String.format("[200][OK] Sucesso: %s", urlRest));
 		} else {
 			logger.error(String.format("Não foi possível executar: %s", urlRest));
 		}

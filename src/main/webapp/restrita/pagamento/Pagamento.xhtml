@@ -115,6 +115,13 @@
 				<p:inputTextarea id="dsObservacao" maxlength="150"
 					value="#{pagamentoBean.pagamento.dsObservacao}" />
 
+				<p:outputLabel value="Procedimento" for="idProcedimento" />
+				<p:selectOneMenu filter="true" id="idProcedimento"
+					value="#{pagamentoBean.idProcedimento}">
+					<f:selectItems value="#{homeMB.procedimentos}" var="item"
+						itemLabel="#{item.dsDescricao}" itemValue="#{item.id}" />
+				</p:selectOneMenu>
+						
 				<p:outputLabel for="botoes" />
 				<p:outputPanel id="botoes">
 					<p:commandLink id="lnkPesquisar" update="@form"

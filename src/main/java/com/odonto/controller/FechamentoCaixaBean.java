@@ -23,7 +23,6 @@ import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -233,11 +232,13 @@ public class FechamentoCaixaBean implements Serializable {
 		Map map = new HashMap();
 
 		DecimalFormat dfMoeda = new DecimalFormat("R$ 0.##");
+		DecimalFormat dfNumero = new DecimalFormat("0");
 
 		for (TbPagamento item : pagamentos) {
 			map = new HashMap();
 			map.put("paciente", item.getTbPaciente().getDsNome());
 			map.put("dentista", item.getTbDentista().getDsNome());
+			map.put("obs", item.getDsObservacao());
 			if (item.getTbTipoPgto().getId().equals(TbTipoPgto.credito)) {
 				map.put("total", dfMoeda.format(item.getVlTotal()) + " " + item.getQtParcelas() + "x");
 			} else {
@@ -250,6 +251,12 @@ public class FechamentoCaixaBean implements Serializable {
 			map = new HashMap();
 			map.put("despesa", item.getTbFornecedor().getDsNome());
 			map.put("obs", item.getDsDescricao());
+			if (item.getVlPago().equals(item.getVlTotal())) {
+				map.put("valorPct", "");
+			}
+			else {
+				map.put("valorPct", dfMoeda.format(item.getVlPago()) + " (" + dfNumero.format(item.getVlPago().divide(item.getVlTotal()).multiply(new BigDecimal(100))) + "%)");				
+			}
 			map.put("total", dfMoeda.format(item.getVlTotal()));
 			mapDespesas.add(map);
 		}
@@ -296,7 +303,7 @@ public class FechamentoCaixaBean implements Serializable {
 		t.merge(context, writer);
 
 		try {
-			final String arquivoGerar = getPdfGerado("FluxoCaixa", dataArquivo);
+			String arquivoGerar = getPdfGerado("FluxoCaixa", dataArquivo);
 			File file = new File(arquivoGerar);
 			if (file.exists()) {
 				file.delete();
@@ -307,12 +314,14 @@ public class FechamentoCaixaBean implements Serializable {
 			FileOutputStream fileOutputStream = new FileOutputStream(arquivoGerar);
 			iTextRenderer.createPDF(fileOutputStream);
 			fileOutputStream.close();
+			
+			final String htmlGerado = writer.toString();
 
 			if (envioEmailCaixa) {
 				final List<UsuarioOUT> socios = usuarioBLL.listarSocios();
 				Thread thread = new Thread() {
 					public void run() {
-						enviarEmail(arquivoGerar, data, socios);
+						enviarEmail(htmlGerado, data, socios);
 					}
 				};
 				thread.start();
@@ -324,10 +333,9 @@ public class FechamentoCaixaBean implements Serializable {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void enviarEmail(String caminho, Date dataFechamento, List<UsuarioOUT> socios) {
+	private void enviarEmail(String htmlFechamentoCaixa, Date dataFechamento, List<UsuarioOUT> socios) {
 		try {
 			logger.info("Tentando enviar e-mail (Fechamento caixa): ");
-//			List<UsuarioOUT> socios = usuarioBLL.listarSocios();
 			for (UsuarioOUT socio : socios) {
 				// Verifica se tem e-mail
 				if (StringUtils.isNotBlank(socio.getDsEmail())) {
@@ -336,16 +344,10 @@ public class FechamentoCaixaBean implements Serializable {
 					email.setSmtpPort(config.getMailPort());
 					email.addTo(socio.getDsEmail(), config.getMailNome());
 					email.setFrom(config.getMailEmail(), config.getMailNome());
-
-					EmailAttachment attachment = new EmailAttachment();
-					attachment.setPath(caminho);
-					attachment.setDisposition(EmailAttachment.ATTACHMENT);
-					email.attach(attachment);
-
 					// Adicione um assunto
 					email.setSubject("Fechamento caixa " + Util.getData(dataFechamento));
 					// Adicione a mensagem do email
-					email.setHtmlMsg("Fluxo de caixa fechado: " + Util.getData(dataFechamento));
+					email.setHtmlMsg(htmlFechamentoCaixa);
 					// Para autenticar no servidor é necessário chamar os dois
 					// métodos
 					// abaixo
