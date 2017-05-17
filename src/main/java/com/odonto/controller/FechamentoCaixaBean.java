@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -255,7 +256,8 @@ public class FechamentoCaixaBean implements Serializable {
 				map.put("valorPct", "");
 			}
 			else {
-				map.put("valorPct", dfMoeda.format(item.getVlPago()) + " (" + dfNumero.format(item.getVlPago().divide(item.getVlTotal()).multiply(new BigDecimal(100))) + "%)");				
+				BigDecimal vlCalculado = item.getVlPago().divide(item.getVlTotal(), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)); 
+				map.put("valorPct", dfMoeda.format(item.getVlPago()) + " (" + dfNumero.format(vlCalculado) + "%)");				
 			}
 			map.put("total", dfMoeda.format(item.getVlTotal()));
 			mapDespesas.add(map);

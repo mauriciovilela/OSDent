@@ -35,7 +35,7 @@ import com.odonto.model.TbUsuario;
 import com.odonto.service.ExportacaoBIService;
 import com.odonto.util.Util;
 
-@Scheduled(cronExpression = "0 0/30 * * * ?")
+@Scheduled(cronExpression = "0 50 17 * * ?")
 public class JobExportacaoBI implements org.quartz.Job {
 
 	// 0 0 19 * * ? = as 19 horas
@@ -62,7 +62,10 @@ public class JobExportacaoBI implements org.quartz.Job {
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		try {
-			exportarAgendaBI(2);
+			List<UsuarioOUT> socios = usuarioBLL.listarSocios();
+			for (UsuarioOUT socio : socios) {
+				exportarAgendaBI(socio.getId());	
+			}			
 			exportarDespesasBI();
 			exportarPagamentosBI();
 			exportarUsuariosBI();
@@ -84,12 +87,12 @@ public class JobExportacaoBI implements org.quartz.Job {
 		data.set(Calendar.HOUR_OF_DAY, 0);
 		data.set(Calendar.MINUTE, 0);
 		data.set(Calendar.SECOND, 0);
-		data.add(Calendar.DATE, -40);
+		data.add(Calendar.DATE, -5);
 		dataInicial = data.getTime();
 
+		data = Calendar.getInstance();
 		// Resto da semana atual e proxima semana
-		data.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-		data.add(Calendar.DATE, 8);
+		data.add(Calendar.DATE, +6);
 		data.set(Calendar.HOUR_OF_DAY, 23);
 		data.set(Calendar.MINUTE, 59);
 		data.set(Calendar.SECOND, 59);

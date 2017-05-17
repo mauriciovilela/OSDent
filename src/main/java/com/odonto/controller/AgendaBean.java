@@ -72,7 +72,7 @@ public class AgendaBean implements Serializable {
 
 	private Integer idDentista;
 
-	@NotNull
+//	@NotNull
 	private TbPaciente paciente;
 
 	@NotNull
@@ -153,17 +153,22 @@ public class AgendaBean implements Serializable {
 			evento.setData(agenda.getId());
 			evento.setEditable(true);
 
-			if (agenda.getIdAgendaStatus().equals(TbAgendaStatus.confirmado)) {
-				evento.setStyleClass("agendaConfirmado");
-			}
-			else if (agenda.getIdAgendaStatus().equals(TbAgendaStatus.falta)) {
-				evento.setStyleClass("agendaFalta");
-			}
-			else if (agenda.getIdAgendaStatus().equals(TbAgendaStatus.marcado)) {
-				evento.setStyleClass("agendaMarcado");
+			if (StringUtils.isEmpty(agenda.getDsPaciente())) {
+				evento.setStyleClass("agendaBloqueio");
 			}
 			else {
-//				evento.setStyleClass("agendaRemarcado");
+				if (agenda.getIdAgendaStatus().equals(TbAgendaStatus.confirmado)) {
+					evento.setStyleClass("agendaConfirmado");
+				}
+				else if (agenda.getIdAgendaStatus().equals(TbAgendaStatus.falta)) {
+					evento.setStyleClass("agendaFalta");
+				}
+				else if (agenda.getIdAgendaStatus().equals(TbAgendaStatus.marcado)) {
+					evento.setStyleClass("agendaMarcado");
+				}
+				else {
+	//				evento.setStyleClass("agendaRemarcado");
+				}
 			}
 
 			// o evento e adicionado na lista

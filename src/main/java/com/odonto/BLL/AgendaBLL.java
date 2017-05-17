@@ -14,6 +14,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.sql.JoinType;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 
 import com.odonto.constants.Constants;
@@ -57,7 +58,7 @@ public class AgendaBLL implements Serializable {
 		Criteria criteria = session.createCriteria(TbAgenda.class);
 		criteria.createAlias("tbDentista", "D");
 		criteria.createAlias("tbAgendaStatus", "AS");
-		criteria.createAlias("tbPaciente", "P");
+		criteria.createAlias("tbPaciente", "P", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("tbProcedimento", "PR");
 		if (idDentista != null)
 			criteria.add(Restrictions.eq("D.id", idDentista));

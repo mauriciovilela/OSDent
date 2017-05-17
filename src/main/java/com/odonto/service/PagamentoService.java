@@ -16,31 +16,11 @@ public class PagamentoService implements Serializable {
 	@Inject
 	private PagamentoBLL bll;
 
-//	@Inject
-//	private PagamentoParcelaBLL bllParcela;
-	
 	@Transactional
 	public TbPagamento salvar(TbPagamento item) {
 		item.setDtInclusao(new Date());
 		TbPagamento pagamento = bll.guardar(item);
-//		if (item.getQtParcelas() > 0) {
-//			for (int nrParcela = 1; nrParcela <= item.getQtParcelas(); nrParcela++) {
-//				TbPagamentoParcela itemParcela = new TbPagamentoParcela();
-//				itemParcela.setNrParcela(nrParcela);
-//				itemParcela.setVlParcela(item.getVlParcela());
-//				itemParcela.setDtCredito(adicionaMes(item.getDtEntrada()));
-//				itemParcela.setTbPagamento(pagamento);
-//				bllParcela.guardar(itemParcela);
-//			}
-//		}
 		return pagamento;
 	}
-	
-//	private Date adicionaMes(Date data) {
-//		Calendar calData = Calendar.getInstance();
-//		calData.setTime(data);
-//		calData.add(Calendar.MONTH, 1);
-//		return calData.getTime();
-//	}
 	
 }

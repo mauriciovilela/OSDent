@@ -37,6 +37,8 @@ body {
 .agendaMarcado { color: white !important; background: #778899 !important; border: 1px solid #778899 !important; }
 .agendaFalta { color: white !important; background: crimson !important;  border: 1px solid crimson !important; }
 .agendaRemarcado { color: white !important; background: darkcyan !important;  border: 1px solid darkcyan !important; }
+.agendaBloqueio { color: white !important; background: #DB7093 !important;  border: 1px solid #DB7093 !important; }
+
 .legendaAgenda { margin-left: 4px;margin-top: 10px;padding-bottom: 10px; }
 .legendaAgendaItem { display: inline-flex;width: 10px;height: 10px; }
 
