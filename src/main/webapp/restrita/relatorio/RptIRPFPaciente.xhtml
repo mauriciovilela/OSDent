@@ -1,0 +1,50 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Relatório CPF Pacientes para IRPF</ui:define>
+    
+    <ui:define name="corpo">
+    	<h:form id="frmPesquisa">
+
+	    	<p:messages autoUpdate="true" closable="true" />
+	 
+	    	<p:panelGrid columns="2" id="painel" >
+				
+				<f:facet name="header"> 
+				       Relatório CPF Pacientes para IRPF
+				</f:facet>	    			
+	    		
+	    	</p:panelGrid>
+	    	   
+			<p:commandButton value="Exportar Excel" ajax="false" style="margin-top:5px;">
+			    <p:dataExporter type="xls" target="dtbRegistros" fileName="RelatorioCPFPacienteIRPF" pageOnly="true"/>
+			</p:commandButton>
+			
+	    	<p:dataTable id="dtbRegistros" value="#{rptIRPFPacienteBean.filtrados}" var="item"
+	    		style="margin-top:10px;" emptyMessage="Nenhum registro encontrado.">
+	    		<p:column headerText="CPF">
+	    			<h:outputText value="#{item.cpf}" />
+	    		</p:column>
+	    		<p:column headerText="Nome">
+	    			<h:outputText value="#{item.nome}" />
+	    		</p:column>	    		
+	    		<p:column headerText="Dentista">
+	    			<h:outputText value="#{item.dentista}" />
+	    		</p:column>
+	    		<p:column headerText="Valor Total">
+	    			<h:outputText value="#{item.valorTotal}" >
+	    				<f:convertNumber type="currency"/>
+	    			</h:outputText>	    		
+	    		</p:column>
+	    		<p:column headerText="Data">
+	    			<h:outputText value="#{item.data}" />
+	    		</p:column>
+	    	</p:dataTable>
+	 	    	
+    	</h:form>
+    </ui:define>
+</ui:composition>
