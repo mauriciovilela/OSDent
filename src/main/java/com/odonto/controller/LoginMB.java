@@ -49,7 +49,7 @@ public class LoginMB implements Serializable {
 	public LoginMB() {
 		// Carrega o arquivo de configuração para a memória
 		AppConfigProperties prop = new AppConfigProperties();
-		prop.init();
+//		prop.init();
 	}
 	
 	public String realizarLogin() {

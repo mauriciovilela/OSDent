@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToBeanResultTransformer;
@@ -48,6 +49,7 @@ public class UsuarioBLL implements Serializable {
 		if (status != null) {
 			criteria.add(Restrictions.eq("flAtivo", status));
 		}
+		criteria.addOrder(Order.asc("dsNome"));
 		criteria.setResultTransformer(new AliasToBeanResultTransformer(UsuarioOUT.class));			
 		return criteria.list();
 	}
