@@ -343,7 +343,8 @@ public class FechamentoCaixaBean implements Serializable {
 				if (StringUtils.isNotBlank(socio.getDsEmail())) {
 					HtmlEmail email = new HtmlEmail();
 					email.setHostName(config.getMailHost());
-					email.setSmtpPort(config.getMailPort());
+//					email.setSmtpPort(config.getMailPort());
+					email.setSmtpPort(587);
 					email.addTo(socio.getDsEmail(), config.getMailNome());
 					email.setFrom(config.getMailEmail(), config.getMailNome());
 					// Adicione um assunto
